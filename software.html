@@ -1,0 +1,597 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Software &amp; Code | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Prism.js for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Part 5: Software &amp; Code</h1>
+        <p class="page-subtitle">Programming Your GPS Receiver</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li>Install Arduino IDE</li>
+                <li>Install required libraries</li>
+                <li>Upload and run GPS code</li>
+                <li>Understand NMEA sentences</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Step 1: Choose Your Arduino Environment</h2>
+            <p>You have two options for programming your Arduino. Choose whichever works best for you:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin: 1.5rem 0;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-bottom: 1rem;">💻 Option A: Desktop IDE</h3>
+                    <p style="margin-bottom: 1rem; opacity: 0.9;">Download and install the Arduino IDE on your computer.</p>
+                    <ol style="margin-left: 1.25rem; line-height: 1.8;">
+                        <li>Go to <a href="https://www.arduino.cc/en/software" target="_blank" style="color: #fff; text-decoration: underline;">arduino.cc/en/software</a></li>
+                        <li>Download Arduino IDE for your OS</li>
+                        <li>Install and launch the application</li>
+                    </ol>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">✅ Best for: Offline work, faster performance</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 1.5rem; border-radius: 12px;">
+                    <h3 style="color: white; margin-bottom: 1rem;">☁️ Option B: Arduino Cloud</h3>
+                    <p style="margin-bottom: 1rem; opacity: 0.9;">Use Arduino directly in your web browser - no installation needed!</p>
+                    <ol style="margin-left: 1.25rem; line-height: 1.8;">
+                        <li>Go to <a href="https://app.arduino.cc/sketches" target="_blank" style="color: #fff; text-decoration: underline;">app.arduino.cc/sketches</a></li>
+                        <li>Create a free Arduino account (or sign in)</li>
+                        <li>Start coding in your browser!</li>
+                    </ol>
+                    <p style="margin-top: 1rem; font-size: 0.85rem; opacity: 0.8;">✅ Best for: Quick setup, any computer</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/arduino_cloud_interface.png" alt="Arduino Cloud Interface" style="width: 100%; max-width: 700px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>The Arduino Cloud interface - click "Create New" to start a new sketch.</em></p>
+            </div>
+            
+            <div class="info-box tip">
+                <p><strong>Note:</strong> Both options work great for this workshop. If you're unsure, try the <strong>Arduino Cloud</strong> - it's the fastest way to get started!</p>
+            </div>
+
+            <h3>☁️ For Arduino Cloud Users: Connect Your Device</h3>
+            <p>If you're using Arduino Cloud, you need to connect your Arduino board:</p>
+            <ol>
+                <li>Plug your Arduino into your computer via USB</li>
+                <li>Click on <strong>"Devices"</strong> in the left sidebar</li>
+                <li>Follow the prompts to add your device</li>
+            </ol>
+            
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_devices.png" alt="Arduino Cloud Devices Button" style="max-width: 200px; height: auto; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Click "Devices" to connect your Arduino</em></p>
+            </div>
+
+            <p>The wizard will guide you through three simple steps:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_add_device.png" alt="Arduino Cloud Add Device Wizard" style="width: 100%; max-width: 650px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>The device setup wizard - click "Add Device" and follow the prompts!</em></p>
+            </div>
+
+            <p>When prompted, choose <strong>"Automatic Setup"</strong> and select <strong>"Arduino boards"</strong>:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_automatic_setup.png" alt="Arduino Cloud Automatic Setup" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Select "Automatic Setup" → "Arduino boards" for the easiest configuration.</em></p>
+            </div>
+
+            <p>Then select <strong>"Via Serial (USB)"</strong> to connect your board:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_usb.png" alt="Arduino Cloud USB Connection" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Choose "Via Serial (USB)" for the standard USB cable connection.</em></p>
+            </div>
+
+            <div class="info-box warning">
+                <p><strong>⚠️ Arduino Cloud Agent Required:</strong> If you see this prompt, click <strong>"Install"</strong> to download the Arduino Cloud Agent. This small program allows your browser to communicate with the Arduino.</p>
+            </div>
+            
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_agent.png" alt="Arduino Cloud Agent Installation Prompt" style="width: 100%; max-width: 500px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Click "Install" if you see this prompt - it's a one-time setup!</em></p>
+            </div>
+
+            <p>Follow the installation wizard - accept the defaults and click <strong>Next</strong> through the steps:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_agent_install.png" alt="Arduino Cloud Agent Installation Wizard" style="width: 100%; max-width: 700px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Open the downloaded file and follow the wizard.</em></p>
+            </div>
+
+            <p>Click <strong>Finish</strong> when complete. You should see "Your Agent is ready":</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_agent_finish.png" alt="Arduino Cloud Agent Installation Complete" style="width: 100%; max-width: 700px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Click "Finish" and you're all set!</em></p>
+            </div>
+
+            <p>Once installed, the Cloud platform will <strong>detect your board</strong> automatically. Select it from the list:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_board_detected.png" alt="Arduino Board Detected" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Your Arduino UNO R4 WiFi should appear in the list - click to select it!</em></p>
+            </div>
+
+            <p>Wait while the device pairs (this may take up to 30 seconds):</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_pairing.png" alt="Device Pairing in Progress" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Pairing in progress - please wait...</em></p>
+            </div>
+
+            <p>You should see confirmation that your device is <strong>connected</strong>. Click <strong>Continue</strong>:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_connected.png" alt="Arduino UNO R4 WiFi Connected" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>"Arduino UNO R4 WiFi connected" - Click Continue to finish setup!</em></p>
+            </div>
+
+            <p>If prompted, allow the board to <strong>update</strong>. This takes a few minutes - keep the device connected:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_update.png" alt="Updating Board Firmware" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>The update is automatic - just wait for it to complete.</em></p>
+            </div>
+
+            <p>If asked, <strong>unplug and replug</strong> the board to finalize the firmware update:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_replug.png" alt="Finalize Firmware Update" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Unplug the USB cable, wait a moment, then plug it back in.</em></p>
+            </div>
+
+            <p>You should see the <strong>success confirmation</strong>. Make sure your device <strong>LED is solid</strong> (not blinking):</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_success.png" alt="Arduino UNO R4 WiFi Connected Successfully" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>"Arduino UNO R4 WiFi connected" with solid LED = ready to go! Click Continue.</em></p>
+            </div>
+
+            <p>Finally, <strong>configure the device</strong> by giving it a name (e.g., "GPS Unit"). Click the checkmark when done:</p>
+            <div style="text-align: center; margin: 1.5rem 0;">
+                <img src="images/arduino_cloud_configure.png" alt="Configure Device Name" style="width: 100%; max-width: 550px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><em>Name your device (e.g., "GPS Unit") and click the checkmark.</em></p>
+            </div>
+
+            <div class="info-box tip">
+                <p><strong>✅ Setup Complete!</strong> Your board is now paired with Arduino Cloud. The solid LED confirms a successful connection. You're ready to start coding!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Step 2: Install the TinyGPS++ Library</h2>
+            <p>We need the <strong>TinyGPS++</strong> library to parse GPS data. Choose the method that matches your environment:</p>
+            
+            <h3>💻 For Desktop Arduino IDE:</h3>
+            <ol>
+                <li>Open Arduino IDE</li>
+                <li>Go to <strong>Sketch → Include Library → Manage Libraries</strong></li>
+                <li>Search for "<strong>TinyGPSPlus</strong>" by Mikal Hart</li>
+                <li>Click <strong>Install</strong></li>
+            </ol>
+
+            <h3>☁️ For Arduino Cloud:</h3>
+            <ol>
+                <li>Click the <strong>Libraries</strong> icon (📚) in the left sidebar</li>
+                <li>Search for "<strong>TinyGPSPlus</strong>" or "<strong>TinyGPS++</strong>"</li>
+                <li>Click <strong>Include</strong> to add it to your sketch</li>
+            </ol>
+
+            <div class="info-box warning">
+                <p><strong>⚠️ Can't Find the Library?</strong> If searching doesn't work, you can manually import it:</p>
+                <ol>
+                    <li>Go to <a href="https://github.com/sounny/TinyGPSPlus" target="_blank" style="color: inherit; text-decoration: underline;">github.com/sounny/TinyGPSPlus</a></li>
+                    <li>Click <strong>Code → Download ZIP</strong></li>
+                    
+                    <div style="text-align: center; margin: 10px 0;">
+                        <img src="images/github_download_zip.png" alt="Downloading ZIP from GitHub" style="max-width: 100%; width: 300px; border-radius: 8px; border: 2px solid rgba(0,0,0,0.1);">
+                    </div>
+                    <li>In Arduino Cloud: Click <strong>Libraries</strong> (book icon) then the <strong>Import</strong> icon (see image below)</li>
+                    
+                    <div style="text-align: center; margin: 10px 0;">
+                        <img src="images/import_gps_library.png" alt="Arduino Cloud Library Import Button" style="max-width: 100%; width: 250px; border-radius: 8px; border: 2px solid rgba(0,0,0,0.1);">
+                    </div>
+
+                    <li>Upload the ZIP file you downloaded</li>
+                    <li>Refresh your browser to load the library</li>
+                </ol>
+            </div>
+
+            <div class="info-box tip">
+                <p><strong>Note for Uno R4 WiFi:</strong> You do NOT need the "SoftwareSerial" library. The Uno R4 WiFi has a dedicated hardware serial port (<code>Serial1</code>) on Pins 0 and 1 that works much better!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Step 3: The GPS Code</h2>
+            <p><strong>💻 For Desktop IDE (Serial Monitor Test):</strong> Copy and paste this code to test your GPS and see output in the Serial Monitor:</p>
+
+                        <pre class="code-block"><code class="language-cpp">/*
+ * GPS Workshop - ISU MSS26
+ * Building and Testing GPS Units
+ *
+ * This code reads GPS data from a NEO-6M module
+ * using the Hardware Serial port (Serial1) on the Arduino Uno R4 WiFi
+ *
+ * Wiring:
+ *   GPS TX  -> Arduino Pin 0 (RX)
+ *   GPS RX  -> Arduino Pin 1 (TX)
+ *   GPS VCC -> Arduino 5V
+ *   GPS GND -> Arduino GND
+ */
+
+#include &lt;TinyGPS++.h&gt;
+
+// The TinyGPS++ object
+TinyGPSPlus gps;
+
+void setup() {
+  // Start the Serial Monitor (laptop)
+  Serial.begin(9600);
+  
+  // Start the hardware serial port for the GPS (Pins 0 and 1)
+  // Most NEO-6M modules use 9600 baud by default
+  Serial1.begin(9600);
+
+  Serial.println(F("===================================="));
+  Serial.println(F("  GPS Workshop - ISU MSS26"));
+  Serial.println(F("  Hardware: Arduino Uno R4 WiFi"));
+  Serial.println(F("===================================="));
+  Serial.println();
+  Serial.println(F("Searching for satellites..."));
+}
+
+void loop() {
+  // Read data from the GPS module on Serial1
+  while (Serial1.available() > 0) {
+    if (gps.encode(Serial1.read())) {
+      displayInfo();
+    }
+  }
+
+  // Check if GPS is detected (if 5 seconds pass with no data)
+  if (millis() > 5000 && gps.charsProcessed() < 10) {
+    Serial.println(F("ERROR: No GPS detected. Check wiring (Pins 0 & 1)!"));
+    delay(5000);
+  }
+}
+
+void displayInfo() {
+  Serial.println(F("----------------------------------------"));
+
+  // Location
+  Serial.print(F("Location:  "));
+  if (gps.location.isValid()) {
+    Serial.print(gps.location.lat(), 6);
+    Serial.print(F(", "));
+    Serial.print(gps.location.lng(), 6);
+  } else {
+    Serial.print(F("INVALID (Searching for satellites...)"));
+  }
+  Serial.println();
+
+  // Date and Time
+  Serial.print(F("Date/Time: "));
+  if (gps.date.isValid() && gps.time.isValid()) {
+    Serial.print(gps.date.month());
+    Serial.print(F("/"));
+    Serial.print(gps.date.day());
+    Serial.print(F("/"));
+    Serial.print(gps.date.year());
+    Serial.print(F(" "));
+    if (gps.time.hour() < 10) Serial.print(F("0"));
+    Serial.print(gps.time.hour());
+    Serial.print(F(":"));
+    if (gps.time.minute() < 10) Serial.print(F("0"));
+    Serial.print(gps.time.minute());
+    Serial.print(F(" UTC"));
+  } else {
+    Serial.print(F("INVALID"));
+  }
+  Serial.println();
+
+  // Satellites & Quality
+  Serial.print(F("Satellites: "));
+  Serial.print(gps.satellites.value());
+  Serial.print(F("  |  HDOP: "));
+  Serial.println(gps.hdop.hdop());
+
+  Serial.println(F("----------------------------------------"));
+  Serial.println();
+}</code></pre>
+
+            <h3>☁️ For Arduino Cloud (IoT Dashboard):</h3>
+            <p>If you're using Arduino Cloud, first create a "Thing" with these variables:</p>
+            <ul>
+                <li><strong>latitude</strong> - Floating Point Number (Read Only)</li>
+                <li><strong>longitude</strong> - Floating Point Number (Read Only)</li>
+                <li><strong>altitude</strong> - Floating Point Number (Read Only)</li>
+                <li><strong>satellites</strong> - Integer (Read Only)</li>
+                <li><strong>gps_time</strong> - Character String (Read Only)</li>
+            </ul>
+            <p>Then use this code in your Cloud sketch:</p>
+
+            <figure style="margin: 20px 0; text-align: center;">
+                <img src="images/arduino_cloud_create_sketch.png" alt="Arduino Cloud Sketch Interface" style="width: 100%; max-width: 600px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <figcaption style="margin-top: 10px; color: #666; font-style: italic;">Finding the Sketch tab in Arduino Cloud</figcaption>
+            </figure>
+
+            <pre class="code-block"><code class="language-cpp">/* 
+  GPS Workshop - Arduino IoT Cloud Version
+  Config: Hardware Serial1 on Pins 0 & 1
+*/
+
+#include "thingProperties.h"
+#include &lt;TinyGPS++.h&gt;
+
+// The TinyGPS++ object
+TinyGPSPlus gps;
+
+// Timer for GPS updates (don't flood the cloud)
+unsigned long lastUpdate = 0;
+const unsigned long UPDATE_INTERVAL = 2000; // Update every 2 seconds
+
+void setup() {
+  // Initialize serial for monitor
+  Serial.begin(9600);
+  delay(1500); 
+
+  // Start the Hardware Serial port for the GPS (Pins 0 and 1)
+  Serial1.begin(9600);
+
+  Serial.println(F("===================================="));
+  Serial.println(F("  GPS Workshop - IoT Cloud Version"));
+  Serial.println(F("  Config: Pins 0 & 1 (Hardware Serial)"));
+  Serial.println(F("===================================="));
+  Serial.println();
+
+  // Defined in thingProperties.h
+  initProperties();
+  ArduinoCloud.begin(ArduinoIoTPreferredConnection);
+  setDebugMessageLevel(2);
+  ArduinoCloud.printDebugInfo();
+  
+  Serial.println(F("Searching for GPS satellites..."));
+}
+
+void loop() {
+  ArduinoCloud.update();
+  
+  // Read data from the GPS module on Serial1
+  while (Serial1.available() > 0) {
+    char c = Serial1.read();
+    if (gps.encode(c)) {
+      // Only update cloud every 2 seconds
+      if (millis() - lastUpdate >= UPDATE_INTERVAL) {
+        updateGPSData();
+        lastUpdate = millis();
+      }
+    }
+  }
+
+  // DIAGNOSTIC LOOP - Check for errors every 5 seconds
+  if (millis() > 5000 && millis() - lastUpdate > 5000) {
+    if (gps.charsProcessed() < 10) {
+      Serial.println(F("ERROR: No GPS data received! Check wiring."));
+      Serial.println(F("       GPS TX -> Arduino Pin 0"));
+      Serial.println(F("       GPS RX -> Arduino Pin 1"));
+    } else if (gps.sentencesWithFix() == 0) {
+      Serial.print(F("DIAGNOSTIC: connected ("));
+      Serial.print(gps.charsProcessed());
+      Serial.println(F(" bytes). Waiting for fix... (Go outside!)"));
+    }
+    lastUpdate = millis();
+  }
+}
+
+void updateGPSData() {
+  if (gps.location.isValid()) {
+    latitude = gps.location.lat();
+    longitude = gps.location.lng();
+    altitude = gps.altitude.meters();
+    satellites = gps.satellites.value();
+    
+    char timeBuffer[10];
+    sprintf(timeBuffer, "%02d:%02d:%02d", 
+            gps.time.hour(), gps.time.minute(), gps.time.second());
+    gps_time = String(timeBuffer);
+  }
+}</code></pre>
+        </section>
+
+        <section class="content-section">
+            <h2>Step 4: Upload the Code</h2>
+            
+            <h3>💻 For Desktop Arduino IDE:</h3>
+            <ol>
+                <li>Connect your Arduino to the computer via USB.</li>
+                <li>Go to <strong>Tools → Board</strong> and select <strong>Arduino Uno R4 WiFi</strong>.</li>
+                <li>Go to <strong>Tools → Port</strong> and select the COM port that appears.</li>
+                <li>Click the <strong>Upload Button</strong> (the Right Arrow icon `→`) at the top left.</li>
+                <li>Wait for the message "Done uploading" at the bottom.</li>
+            </ol>
+
+            <h3>☁️ For Arduino Cloud:</h3>
+            <ol>
+                <li>Ensure the <strong>Arduino Create Agent</strong> is running on your computer.</li>
+                <li>Check that your board (Arduino Uno R4 WiFi) is selected in the top bar.</li>
+                <li>Click the <strong>Upload Button</strong> (the Right Arrow icon `→`) located near the top right.</li>
+                <li>Wait for the console to say <strong>"Success"</strong> or "Uploaded".</li>
+                <li>Click the <strong>Monitor</strong> tab to check for the "DIAGNOSTIC" messages!</li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2>Step 5: View Your Data</h2>
+            
+            <h3>For Serial Monitor (Debugging):</h3>
+            <ol>
+                <li>Open <strong>Tools → Serial Monitor</strong> (or the Monitor tab in Cloud).</li>
+                <li>Set baud rate to <strong>9600</strong> (bottom right corner).</li>
+                <li><strong>Check Diagnostics:</strong> If it says "No GPS data received", check your wiring!</li>
+                <li>If it says "Waiting for fix...", take the unit outside.</li>
+            </ol>
+
+            <h3>For Arduino Cloud Dashboard:</h3>
+            <ol>
+                <li>Once the Monitor shows a fix, go to your <strong>Dashboards</strong> tab.</li>
+                <li>Add a <strong>Map Widget</strong> and link it to `latitude` and `longitude`.</li>
+                <li>Add <strong>Gauges</strong> for `satellites` and `altitude`.</li>
+                <li>Watch your real-time position appear on the map! 🌍</li>
+            </ol>
+
+            <div class="info-box tip">
+                <p><strong>Fix Time:</strong> The first time you power up a GPS, it can take 1-5 minutes to download the satellite almanac (cold start). Be patient and ensure it has a clear view of the sky!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Troubleshooting: "No GPS Data Received"</h2>
+            <p>If your Serial Monitor shows a repeating error like the one below, your Arduino cannot "hear" the GPS module.</p>
+            
+            <figure style="margin: 20px 0; text-align: center;">
+                <img src="images/arduino_cloud_gps_error.png" alt="Serial Monitor showing No GPS Data error" style="width: 100%; max-width: 600px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <figcaption style="margin-top: 10px; color: #666; font-style: italic;">(Note: Your error message will specify Pins 0 and 1)</figcaption>
+            </figure>
+
+            <h3>How to Fix It:</h3>
+            <ol>
+                <li><strong>Check Power (No Light?):</strong> Look at the GPS board. Is the small LED on? If not, check your <strong>VCC (5V)</strong> and <strong>GND</strong> wires. The GPS needs power!</li>
+                <li><strong>Swap TX/RX:</strong> This is the most common issue. Swap the wires on <strong>Pin 0</strong> and <strong>Pin 1</strong>. (GPS TX must go to Arduino RX).</li>
+                <li><strong>Check Solder:</strong> If you are using a new module, ensure the headers are soldered on, not just loose.</li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2>Understanding NMEA Sentences</h2>
+            <p>GPS modules output data in <strong>NMEA format</strong>. Common sentences:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Sentence</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>$GPGGA</strong></td><td>Fix information: time, position, quality</td></tr>
+                    <tr><td><strong>$GPRMC</strong></td><td>Recommended minimum: position, velocity, time</td></tr>
+                    <tr><td><strong>$GPGSV</strong></td><td>Satellites in view</td></tr>
+                    <tr><td><strong>$GPGSA</strong></td><td>DOP and active satellites</td></tr>
+                    <tr><td><strong>$GPVTG</strong></td><td>Velocity and heading</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Example NMEA Sentence</h3>
+            <div class="code-block"><code>$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,47.0,M,,*47</code></div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Time</td><td>123519</td><td>12:35:19 UTC</td></tr>
+                    <tr><td>Latitude</td><td>4807.038,N</td><td>48 deg 07.038' N</td></tr>
+                    <tr><td>Longitude</td><td>01131.000,E</td><td>11 deg 31.000' E</td></tr>
+                    <tr><td>Fix Quality</td><td>1</td><td>GPS fix</td></tr>
+                    <tr><td>Satellites</td><td>08</td><td>8 satellites in use</td></tr>
+                    <tr><td>HDOP</td><td>0.9</td><td>Excellent geometry</td></tr>
+                    <tr><td>Altitude</td><td>545.4 M</td><td>545.4 meters</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Troubleshooting</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Problem</th>
+                        <th>Possible Cause</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"No GPS detected" error</td>
+                        <td>Wrong wiring</td>
+                        <td>Check TX/RX connections</td>
+                    </tr>
+                    <tr>
+                        <td>No satellite fix</td>
+                        <td>Indoors</td>
+                        <td>Go outside, clear sky view</td>
+                    </tr>
+                    <tr>
+                        <td>Fix takes very long</td>
+                        <td>Cold start</td>
+                        <td>Wait 2-3 minutes, stay still</td>
+                    </tr>
+                    <tr>
+                        <td>Random characters in Serial</td>
+                        <td>Wrong baud rate</td>
+                        <td>Check GPS=9600, Monitor=9600</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="hardware.html" class="nav-btn prev">&larr; Hardware Assembly</a>
+            <a href="eratosthenes.html" class="nav-btn next">Eratosthenes &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- Prism.js for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+</body>
+</html>
+
+
+

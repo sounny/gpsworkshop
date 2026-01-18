@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to GPS | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>🛰️ Part 1: Introduction to GPS</h1>
+        <p class="page-subtitle">Understanding Global Navigation Satellite Systems</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <p>By the end of this section, you will be able to:</p>
+            <ul>
+                <li>Define GPS and GNSS</li>
+                <li>Identify the major GNSS constellations</li>
+                <li>Explain why GPS matters for space applications</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>What is GNSS?</h2>
+            <p><strong>GNSS (Global Navigation Satellite System)</strong> is the umbrella term for all satellite-based navigation systems that provide global positioning coverage. These systems deliver <strong>3D geolocation</strong> (latitude, longitude, and <em>altitude</em>) and <strong>precise time information</strong> to any receiver with an unobstructed view of at least four satellites.</p>
+
+            <h3>GPS: The Original GNSS</h3>
+            <p><strong>GPS (Global Positioning System)</strong> is the United States' satellite navigation system and was the <strong>first operational GNSS</strong>. Developed by the U.S. Department of Defense, it became the standard open system for the world and remains the most widely used today.</p>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/gnss_satellites_orbit.png" alt="Illustration of GNSS satellites orbiting Earth" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Artist's conception of Navstar GPS satellites in Medium Earth Orbit (MEO)</em></p>
+            </div>
+
+            <h3>Historical Evolution</h3>
+            <p>GPS technology has evolved dramatically:</p>
+            
+            <div class="info-box tip">
+                <p><strong>🚚 1981:</strong> Receivers were truck-sized! The NASA Jet Propulsion Laboratory had massive equipment just to receive GPS signals.</p>
+                <p><strong>📱 Today:</strong> The same technology fits in your smartphone or a tiny chip.</p>
+                <p>The underlying principles remain the same — only the size has changed!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Other GNSS Constellations</h2>
+            <p>Following GPS's success, other nations developed their own satellite navigation systems. Today, multiple GNSS constellations operate worldwide:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>System</th>
+                        <th>Country/Region</th>
+                        <th>Satellites</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GPS</strong></td>
+                        <td>United States</td>
+                        <td>31</td>
+                        <td>Fully Operational</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GLONASS</strong></td>
+                        <td>Russia</td>
+                        <td>24</td>
+                        <td>Fully Operational</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Galileo</strong></td>
+                        <td>European Union</td>
+                        <td>30</td>
+                        <td>Fully Operational</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BeiDou</strong></td>
+                        <td>China</td>
+                        <td>35+</td>
+                        <td>Fully Operational</td>
+                    </tr>
+                    <tr>
+                        <td><strong>QZSS</strong></td>
+                        <td>Japan</td>
+                        <td>4</td>
+                        <td>Regional (Asia-Pacific)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>NavIC (IRNSS)</strong></td>
+                        <td>India</td>
+                        <td>7</td>
+                        <td>Regional (India)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Why GPS Matters</h2>
+            <p>GPS technology is fundamental to many industries and applications:</p>
+            
+            <ul>
+                <li><strong>Navigation</strong> — Aviation, maritime, ground transportation</li>
+                <li><strong>Surveying & Mapping</strong> — Land management, GIS, construction</li>
+                <li><strong>Timing</strong> — Financial transactions, telecommunications, power grids</li>
+                <li><strong>Scientific Research</strong> — Climate change, earthquake monitoring, atmospheric studies</li>
+                <li><strong>Space Applications</strong> — Satellite tracking, orbit determination, spacecraft navigation</li>
+            </ul>
+
+            <div class="info-box note">
+                <p><strong>💡 Fun Fact:</strong> Banks, railways, electrical grids, and aircraft rely heavily on GPS not just for location, but for precise timing from the atomic clocks in satellites! GPS has become critical infrastructure for our modern world.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Types of GPS Receivers</h2>
+            <p>GPS receivers come in many forms, from consumer handheld devices to survey-grade equipment. The main differences are accuracy, cost, and the ability to use differential correction techniques:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Accuracy</th>
+                        <th>Common Manufacturers</th>
+                        <th>Differential Correction</th>
+                        <th>Price Range</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Recreational/Consumer</strong></td>
+                        <td>~15 meters</td>
+                        <td>Garmin, Magellan, smartphones</td>
+                        <td>❌ No (WAAS only)</td>
+                        <td>$50 - $500</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mapping Grade</strong></td>
+                        <td>1-5 meters</td>
+                        <td>Trimble, Garmin, Bad Elf</td>
+                        <td>✅ Post-processing</td>
+                        <td>$500 - $5,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GIS/Professional</strong></td>
+                        <td>Sub-meter</td>
+                        <td>Trimble, Leica, Topcon</td>
+                        <td>✅ Real-time & Post-processing</td>
+                        <td>$3,000 - $10,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Survey Grade</strong></td>
+                        <td>1-2 cm</td>
+                        <td>Trimble, Leica, Topcon, Javad</td>
+                        <td>✅ RTK (Real-Time Kinematic)</td>
+                        <td>$15,000 - $50,000</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; margin: 2rem 0;">
+                <div style="text-align: center; flex: 1; min-width: 200px; max-width: 300px;">
+                    <img src="images/garmin_etrex_10.png" alt="Garmin eTrex 10 Handheld GPS" style="max-width: 100%; height: 200px; object-fit: contain; border-radius: 8px;">
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><strong>Recreational GPS</strong><br>Garmin eTrex 10</p>
+                </div>
+                <div style="text-align: center; flex: 1; min-width: 200px; max-width: 300px;">
+                    <img src="images/GPS_Presentation_image1.jpeg" alt="Garmin Rino GPS Unit" style="max-width: 100%; height: 200px; object-fit: contain; border-radius: 8px;">
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><strong>Recreational GPS</strong><br>Garmin Rino</p>
+                </div>
+                <div style="text-align: center; flex: 1; min-width: 200px; max-width: 300px;">
+                    <img src="images/GPS_Presentation_image2.jpeg" alt="Survey-Grade GPS Receiver" style="max-width: 100%; height: 200px; object-fit: contain; border-radius: 8px;">
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 0.5rem;"><strong>Survey-Grade GPS</strong><br>RTK-capable receiver</p>
+                </div>
+            </div>
+
+            <div class="info-box note">
+                <p><strong>What is Differential Correction?</strong> This technique uses a base station at a known location to calculate and correct errors in GPS signals, dramatically improving accuracy from meters to centimeters.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>GPS History: How Far We've Come</h2>
+            <p>Today's smartphone GPS fits on a tiny chip, but early GPS receivers were massive pieces of equipment. Here's a fascinating look at how the technology has evolved:</p>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/jpl_series_title.png" alt="JPL's SERIES Codeless Receiver c. 1981 - Satellite Emission Radio Interferometric Earth Surveying" style="max-width: 100%; height: auto; border-radius: 12px;">
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/jpl_series_receiver.png" alt="NASA JPL SERIES mobile GPS receiver - a truck with large antenna trailer" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>JPL's SERIES (Satellite Emission Radio Interferometric Earth Surveying) codeless receiver, c. 1981. A complete mobile GPS station required a truck and trailer!</em></p>
+            </div>
+
+            <div class="info-box tip">
+                <p><strong>From Trucks to Pockets:</strong> In 1981, a GPS receiver required an entire truck, trailer, and large antenna dish. Today, the same functionality fits on a chip smaller than your fingernail inside every smartphone. The Arduino GPS module we're building in this workshop represents an incredible democratization of space technology!</p>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn prev">← Home</a>
+            <a href="how-gps-works.html" class="nav-btn next">How GPS Works →</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+

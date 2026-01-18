@@ -1,0 +1,337 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How GPS Works | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .formula-box {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 1.5rem 0;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .formula-box .formula {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .formula-box .formula-desc {
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
+        }
+        .formula-example {
+            background: #e8f5e9;
+            border-left: 4px solid #00c853;
+            padding: 1rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .trilateration-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .trilateration-card {
+            text-align: center;
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .trilateration-card img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .trilateration-card h4 {
+            margin: 0.75rem 0 0.25rem;
+            color: #1a1a2e;
+        }
+        .trilateration-card p {
+            font-size: 0.9rem;
+            color: #666;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Part 2: How GPS Works</h1>
+        <p class="page-subtitle">From Satellites to Your Position</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li>Explain the three segments of GPS</li>
+                <li>Describe the principle of trilateration</li>
+                <li>Understand why we need 4 satellites for a position fix</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>The Three Segments of GPS</h2>
+
+            <h3>1. Space Segment</h3>
+            <ul>
+                <li><strong>31 operational satellites</strong> in Medium Earth Orbit (MEO)</li>
+                <li>Orbiting in <strong>6 orbital planes</strong> to ensure full Earth coverage</li>
+                <li>Altitude: approximately <strong>20,200 km</strong> above Earth</li>
+                <li>Orbital period: ~12 hours (2 orbits per day)</li>
+                <li>Each satellite carries <strong>atomic clocks</strong> (cesium and rubidium)</li>
+            </ul>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/GPSAnimation.gif" alt="Animation of GPS Constellation and Coverage" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;"><em>GPS Consellation Animation: Showing orbital paths and number of visible satellites (Source: GPSWorkshop)</em></p>
+            </div>
+
+            <div class="info-box tip">
+                <p><strong>Redundancy:</strong> At any time, about <strong>8 to 10 satellites are visible</strong> above you. You only need four to get a position, but more satellites help if some are blocked by buildings or mountains.</p>
+            </div>
+
+            <h3>2. Control Segment</h3>
+            <ul>
+                <li><strong>Master Control Station</strong> at Schriever Air Force Base, Colorado</li>
+                <li><strong>Monitor Stations</strong> worldwide tracking satellites</li>
+                <li><strong>Ground Antennas</strong> uploading navigation data to satellites</li>
+                <li>Continuously updates satellite ephemeris and clock corrections</li>
+            </ul>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/GPS_image3.png" alt="GPS Control Segment" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;"><em>GPS Control Segment (Credit: Peter H. Dana)</em></p>
+            </div>
+
+            <h3>3. User Segment</h3>
+            <ul>
+                <li>All GPS receivers (your phone, car GPS, our Arduino units!)</li>
+                <li>Receives signals from satellites</li>
+                <li>Calculates position using trilateration</li>
+            </ul>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/GPS_image4.png" alt="GPS Navigation Applications" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;"><em>GPS Navigation Applications (Credit: Peter H. Dana)</em></p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>GPS Signals</h2>
+            <p>GPS satellites transmit on multiple frequencies:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Signal</th>
+                        <th>Frequency</th>
+                        <th>Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>L1</strong></td>
+                        <td>1575.42 MHz</td>
+                        <td>Civilian (C/A code)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L2</strong></td>
+                        <td>1227.60 MHz</td>
+                        <td>Military (P code) + Civilian (L2C)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>L5</strong></td>
+                        <td>1176.45 MHz</td>
+                        <td>Safety-of-life applications</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Each signal contains:</p>
+            <ul>
+                <li><strong>Pseudo-random noise (PRN) code</strong> - Unique identifier for each satellite</li>
+                <li><strong>Navigation message</strong> - Satellite position (ephemeris), clock corrections, almanac</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Trilateration: How Position is Calculated</h2>
+
+            <h3>The Basic Principle</h3>
+            <p>GPS determines position by measuring the <strong>distance</strong> from multiple satellites.</p>
+            
+            <div class="formula-box">
+                <div class="formula">Distance = Speed &times; Time</div>
+                <div class="formula-desc">d = c &times; t</div>
+            </div>
+
+            <p>Satellites transmit their location and the precise time the signal left. The receiver calculates distance by measuring how long the signal took to arrive, traveling at the speed of light.</p>
+
+            <div class="formula-example">
+                <p><strong>Example Calculation:</strong></p>
+                <p>Speed of light: <strong>c = 299,792,458 m/s</strong> (about 300,000 km/s)</p>
+                <p>If signal travel time: <strong>t = 0.067 seconds</strong></p>
+                <p>Distance = 299,792,458 m/s &times; 0.067 s = <strong>20,086 km</strong></p>
+                <p><em>That's about the altitude of GPS satellites!</em></p>
+            </div>
+
+            <h3>The Clock Problem</h3>
+            <p>Precise timing is critical. Satellites have <strong>atomic clocks</strong>, but receivers (like phones and our Arduino units) don't. How do we solve this?</p>
+            
+            <div class="info-box note">
+                <p><strong>Solution:</strong> We use a signal from a <strong>fourth satellite</strong> to synchronize the receiver's time!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>The Colorado Example</h2>
+            <p>Let's use a 2D example with cities in Colorado to understand how GPS finds your location:</p>
+
+            <div class="trilateration-grid">
+                <div class="trilateration-card">
+                    <img src="images/trilateration_1.png" alt="One Signal - Circle">
+                    <h4>Step 1: One Signal</h4>
+                    <p>Knowing your distance from Grand Junction puts you anywhere on a circle around that point.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/trilateration_2.png" alt="Two Signals - Two Points">
+                    <h4>Step 2: Two Signals</h4>
+                    <p>Adding Fort Collins creates two intersecting circles, narrowing to two possible spots.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/trilateration_3.png" alt="Three Signals - Your Location">
+                    <h4>Step 3: Three Signals</h4>
+                    <p>A third point (Pueblo) intersects at only one location - that's YOU!</p>
+                </div>
+            </div>
+
+            <h3>From 2D to 3D Space</h3>
+            <p>In the real world, we extend the concept from 2D circles to 3D spheres. The following figures from the GIS&T Body of Knowledge illustrate this beautifully:</p>
+
+            <div class="trilateration-grid">
+                <div class="trilateration-card">
+                    <img src="images/trilateration_2d.png" alt="2D Trilateration with three circles">
+                    <h4>2D Trilateration</h4>
+                    <p>Three known points (A, B, C) create intersecting circles that meet at one unique point of interest.</p>
+                    <p class="figure-attribution">Source: <a href="https://gistbok-ltb.ucgis.org/page/34/concept/10599" target="_blank">Hodgson, 2025 - GIS&T BoK</a></p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/trilateration_two_spheres.jpeg" alt="Two spheres intersect in a circle" style="object-fit: contain; background: #fff; padding: 10px;">
+                    <h4>Step 4: Two Spheres</h4>
+                    <p>In 3D, two spheres from two satellites intersect to form a <strong>circle</strong> of possible locations.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/trilateration_spheres.jpeg" alt="Three spheres intersect in two points" style="object-fit: contain; background: #fff; padding: 10px;">
+                    <h4>Step 5: Three Spheres</h4>
+                    <p>Adding a third sphere narrows the location to just <strong>two points</strong> where all three spheres meet.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/trilateration_3d.png" alt="3D Trilateration with four satellites">
+                    <h4>3D Trilateration</h4>
+                    <p>In 3D space, four satellites create intersecting spheres centered at each satellite position.</p>
+                    <p class="figure-attribution">Source: <a href="https://gistbok-ltb.ucgis.org/page/34/concept/10599" target="_blank">Piovan in Hodgson, 2025</a></p>
+                </div>
+            </div>
+
+            <ul>
+                <li>Three spheres intersect at <strong>two points</strong></li>
+                <li>One point is usually far out in space or deep inside Earth</li>
+                <li>The receiver knows to pick the point on the Earth's surface!</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Why 4 Satellites?</h2>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/GPS_image1.png" alt="GPS Trilateration - X, Y, Z and Time" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;"><em>Four satellites estimate position (X, Y, Z) and time (T) (Credit: Peter H. Dana)</em></p>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th># Satellites</th>
+                        <th>What We Can Determine</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1 satellite</td>
+                        <td>Distance sphere - somewhere on a sphere around the satellite</td>
+                    </tr>
+                    <tr>
+                        <td>2 satellites</td>
+                        <td>Circle - intersection of two spheres</td>
+                    </tr>
+                    <tr>
+                        <td>3 satellites</td>
+                        <td>Two points - intersection of three spheres</td>
+                    </tr>
+                    <tr>
+                        <td><strong>4 satellites</strong></td>
+                        <td><strong>One unique point + clock error correction</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box note">
+                <p>The 4th satellite is crucial because our receiver clock is not as accurate as the atomic clocks on satellites. The 4th measurement allows us to solve for <strong>4 unknowns</strong>: X, Y, Z position + receiver clock error.</p>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="introduction.html" class="nav-btn prev">&larr; Intro</a>
+            <a href="errors.html" class="nav-btn next">Errors &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+

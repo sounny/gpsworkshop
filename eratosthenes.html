@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eratosthenes | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            margin: 2rem 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #0066cc, #00c853);
+            border-radius: 2px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: #0066cc;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 0 0 3px #0066cc;
+        }
+        .timeline-date {
+            font-weight: 700;
+            color: #0066cc;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+        .method-diagram {
+            background: linear-gradient(135deg, #fef9e7 0%, #fdebd0 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            margin: 2rem 0;
+            border: 2px solid #f0b429;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="software.html">How it Works</a></li>
+                <li><a href="field-testing.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Eratosthenes: Measuring the Earth</h1>
+        <p class="page-subtitle">How a Greek Scholar Calculated Earth's Circumference 2,200 Years Ago</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Watch: The Story of Eratosthenes</h2>
+            <p>Before GPS, before satellites, before modern technology - one brilliant mind figured out how to measure our entire planet using only shadows, geometry, and ingenuity.</p>
+            
+            <div class="video-container" style="cursor: pointer; padding-bottom: 0; height: auto;" onclick="window.open('https://www.youtube.com/watch?v=G8cbIWMv0rI', '_blank')">
+                <img src="images/carl_sagan_eratosthenes.png" alt="Watch Carl Sagan explain Eratosthenes" style="width: 100%; height: auto; display: block;">
+                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60px; height: 60px; background: rgba(0,0,0,0.7); border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; transition: background 0.3s ease;">
+                    <div style="width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 18px solid white; margin-left: 4px;"></div>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 0.9rem;">
+                <a href="https://www.youtube.com/watch?v=G8cbIWMv0rI" target="_blank" style="color: var(--primary); text-decoration: underline;">Watch on YouTube</a>
+            </p>
+        </section>
+
+        <section class="content-section">
+            <h2>Who Was Eratosthenes?</h2>
+            
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: flex-start;">
+                <div style="flex: 0 0 auto; text-align: center;">
+                    <img src="images/eratosthenes_portrait.png" alt="Portrait of Eratosthenes of Cyrene" style="width: 180px; height: auto; border-radius: 50%; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <p style="font-size: 0.8rem; color: #666; margin-top: 0.5rem; font-style: italic;">Eratosthenes of Cyrene<br>(c. 276–195 BCE)</p>
+                </div>
+                <div style="flex: 1; min-width: 280px;">
+                    <p><strong>Eratosthenes of Cyrene</strong> (c. 276–195 BCE) was an Ancient Greek polymath renowned for his contributions to mathematics, geography, poetry, astronomy, and music theory. As chief librarian at the famous Library of Alexandria in Egypt, he is often called the <strong>"Father of Geography"</strong> and made numerous contributions to science.</p>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">276 BCE</div>
+                    <p>Born in Cyrene (modern-day Libya)</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">~245 BCE</div>
+                    <p>Appointed chief librarian at the Library of Alexandria</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">~240 BCE</div>
+                    <p>Wrote <em>Geographika</em> and coined the term "Geography"</p>
+                </div>
+
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 2rem; align-items: center; margin: 2rem 0;">
+                <div style="flex: 1; min-width: 280px;">
+                    <img src="images/eratosthenes_teaching.png" alt="Eratosthenes instructing a scholar in Alexandria" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.2);">
+                </div>
+                <div style="flex: 1; min-width: 280px;">
+                    <p style="font-size: 1.05rem; line-height: 1.7;">As the chief librarian at Alexandria's Library, Eratosthenes advanced geographical studies by introducing enduring terminology and creating the <strong>first global map with parallels and meridians</strong> — the same coordinate system we use today with GPS!</p>
+                    <p style="font-size: 0.85rem; color: #666; font-style: italic;">Image: Eratosthenes instructing a scholar in Alexandria</p>
+                </div>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">~240 BCE</div>
+                    <p>Calculated Earth's circumference with remarkable accuracy</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">~220 BCE</div>
+                    <p>Cataloged 675 stars and calculated the tilt of Earth's axis</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-date">194 BCE</div>
+                    <p>Died in Alexandria at approximately 82 years old</p>
+                </div>
+            </div>
+
+            <div class="info-box note">
+                <p><strong>Fun Fact:</strong> Eratosthenes also invented the "Sieve of Eratosthenes" - an algorithm for finding prime numbers that is still taught in computer science today!</p>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/library_alexandria.png" alt="The Library of Alexandria" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>The Library of Alexandria, built during the early Ptolemaic Dynasty of Egypt, where Eratosthenes served as chief librarian</em></p>
+            </div>
+
+            <hr style="border: 0; height: 1px; background: #ddd; margin: 3rem 0;">
+
+            <h3>The World According to Eratosthenes (220 BC)</h3>
+            <p>Eratosthenes is attributed with devising the first system of Latitude and Longitude. He produced this map based on his own calculations and reports from explorers like Nearchus and Pytheas.</p>
+            
+            <figure style="margin: 2rem 0; text-align: center;">
+                <img src="images/eratosthenes_world_map.png" alt="Facsimile of the world map by Eratosthenes (around 220 BC)" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); border: 1px solid #e2e8f0;">
+                <figcaption style="margin-top: 1rem; font-size: 0.9rem; color: #555; text-align: left; background: #f8fafc; padding: 1rem; border-radius: 8px; line-height: 1.6;">
+                    <strong>Map Description:</strong> This facsimile shows the known world around 220 BC. It includes place names like <em>Hellas</em> (Greece), <em>Pontus Euxinus</em> (Black Sea), <em>Taprobane</em> (Sri Lanka), and <em>Brettania</em> (Britain). Note the grid lines—Eratosthenes was the first to use such a grid to locate places on Earth. The map highlights his birthplace <em>Cyrene</em> (Libya) and the Egyptian cities <em>Alexandria</em> and <em>Syene</em> (Aswan) pivotal to his circumference calculation.<br>
+                    <span style="font-size: 0.8rem; display: block; margin-top: 0.5rem; color: #888;">Source: <a href="https://etc.usf.edu/maps/pages/10400/10489/10489.htm" target="_blank">University of South Florida - Maps ETC</a></span>
+                </figcaption>
+            </figure>
+        </section>
+
+        <section class="content-section">
+            <h2>The Brilliant Method</h2>
+            
+            <p>Eratosthenes learned that in the city of <strong>Syene</strong> (modern-day Aswan, Egypt), on the summer solstice at noon, the sun was directly overhead - so directly that it shone straight down into a deep well without casting any shadow. The sun's rays were perfectly vertical.</p>
+
+            <p>However, in <strong>Alexandria</strong>, where Eratosthenes lived (about 800 km north of Syene), the sun was NOT directly overhead on that same day. Objects cast shadows.</p>
+
+            <h3>His Key Insight</h3>
+            <p>If the Earth were flat, the sun would cast the same shadow (or no shadow) everywhere. But since Earth is a sphere, the sun's rays hit different parts at different angles!</p>
+
+            <div class="method-diagram">
+                <h4>The Geometry</h4>
+                <p>On the summer solstice at noon:</p>
+                <ul style="text-align: left; display: inline-block;">
+                    <li><strong>Syene:</strong> Sun directly overhead (0&deg; shadow angle)</li>
+                    <li><strong>Alexandria:</strong> Sun casts shadow at ~7.2&deg; angle</li>
+                    <li><strong>Distance between cities:</strong> ~5,000 stadia (~800 km)</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/eratosthenes_geometry_wikipedia.png" alt="Geometric diagram of Eratosthenes' measurement" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); background: white;">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Geometric Representation: The sun's rays are parallel. Angle φ (phi) measured at Alexandria (A) by the shadow is equal to the central angle at the Earth's center. S represents Syene (Aswan). (Source: Wikipedia)</em></p>
+            </div>
+
+            <h3>The Calculation</h3>
+            <p>Eratosthenes reasoned:</p>
+            <ul>
+                <li>The 7.2&deg; angle represents 1/50th of a full circle (360&deg; / 7.2&deg; = 50)</li>
+                <li>Therefore, the distance between the cities (5,000 stadia) represents 1/50th of Earth's circumference</li>
+                <li>Earth's circumference = 5,000 stadia &times; 50 = <strong>250,000 stadia</strong></li>
+            </ul>
+
+            <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff; padding: 1.5rem 2rem; border-radius: 12px; text-align: center; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace;">
+                <div style="font-size: 1.2rem; margin-bottom: 0.5rem;">Circumference = Distance &times; (360&deg; / Angle)</div>
+                <div style="font-size: 1rem; color: rgba(255,255,255,0.8);">= 5,000 stadia &times; (360 / 7.2) = <strong>250,000 stadia</strong></div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>How Accurate Was He?</h2>
+            
+            <p>Converting ancient units to modern measurements is tricky, but most historians estimate:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Measurement</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Eratosthenes' Result</td>
+                        <td>~39,375 - 46,250 km*</td>
+                    </tr>
+                    <tr>
+                        <td>Actual Earth Circumference</td>
+                        <td>40,075 km (equatorial)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accuracy</strong></td>
+                        <td><strong>Within 2-15% of actual value!</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><em>*Depending on which definition of "stadion" is used</em></p>
+
+            <div class="info-box tip">
+                <p><strong>Remarkable Achievement:</strong> Using only a stick, shadows, and his brilliant mind, Eratosthenes calculated the size of our planet to within a few percent of the actual value - over 2,200 years before satellites!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>From Shadows to Satellites</h2>
+            
+            <p>In this GPS workshop, you will recreate Eratosthenes' experiment using modern technology:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Eratosthenes (240 BCE)</th>
+                        <th>Your Experiment (Today)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Measured shadow angles</td>
+                        <td>Measure GPS coordinates</td>
+                    </tr>
+                    <tr>
+                        <td>Hired someone to pace distance</td>
+                        <td>Pace distance yourself (count steps)</td>
+                    </tr>
+                    <tr>
+                        <td>Used geometry to find angular difference</td>
+                        <td>Use latitude difference from GPS</td>
+                    </tr>
+                    <tr>
+                        <td>Calculated circumference using ratio</td>
+                        <td>Calculate circumference using same formula!</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box note">
+                <p><strong>The Same Math, New Tools:</strong> The fundamental principle is identical - if you know a distance and the corresponding angle of Earth's curvature, you can calculate the whole circumference. Eratosthenes used the sun; you'll use GPS satellites orbiting 20,000 km above Earth!</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Why This Matters</h2>
+            
+            <ul>
+                <li><strong>Scientific Method:</strong> Eratosthenes demonstrated that careful observation and mathematics can reveal truths about our world</li>
+                <li><strong>Critical Thinking:</strong> He questioned assumptions (Is the Earth flat?) and designed an experiment to test them</li>
+                <li><strong>Applied Geometry:</strong> Abstract mathematical concepts (angles, ratios, circles) solved a real-world problem</li>
+                <li><strong>GPS Heritage:</strong> Modern satellite navigation builds on the same geometric principles that Eratosthenes used</li>
+            </ul>
+
+            <div class="info-box tip">
+                <p><strong>Ready to try it yourself?</strong> Head to the <a href="field-testing.html">Field Testing</a> page to conduct <strong>Experiment 3: Calculate Earth's Circumference</strong> using your GPS unit!</p>
+            </div>
+
+            <div class="info-box warning" style="margin-top: 1.5rem;">
+                <h4 style="margin-bottom: 0.75rem;">🔧 Don't Have a Working Arduino GPS Unit?</h4>
+                <p>No worries! You can still complete this lab using one of these alternatives:</p>
+                <ul style="margin: 1rem 0 0.5rem 1.5rem;">
+                    <li><strong>Web-Based GPS App:</strong> Use the <a href="https://sounny.github.io/gps/" target="_blank" style="color: inherit; text-decoration: underline; font-weight: 600;">GPS Web App</a> on any device with GPS capabilities (laptop, tablet, or phone)</li>
+                    <li><strong>Commercial GPS Unit:</strong> If you have a handheld Garmin, Magellan, or similar device</li>
+                    <li><strong>Smartphone GPS App:</strong> Download any GPS app that displays your coordinates (e.g., GPS Status, Compass, or your phone's built-in Maps app)</li>
+                </ul>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>The key is obtaining accurate latitude readings at two different locations — the tool doesn't matter!</em></p>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="software.html" class="nav-btn prev">&larr; Software</a>
+            <a href="field-testing.html" class="nav-btn next">Field Lab &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with â¤ï¸ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+

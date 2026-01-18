@@ -1,0 +1,471 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Knowledge Quiz | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .quiz-question {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+        .quiz-question.answered {
+            border-color: #ccc;
+        }
+        .quiz-question.correct {
+            border-color: #00c853;
+            background: linear-gradient(135deg, #f0fff4 0%, #e8f5e9 100%);
+        }
+        .quiz-question.incorrect {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff8f0 0%, #ffebee 100%);
+        }
+        .question-number {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+        .options-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .option-item {
+            margin-bottom: 0.75rem;
+        }
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.875rem 1rem;
+            background: #f8fafc;
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            color: var(--text);
+        }
+        .option-btn:hover:not(:disabled) {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+        .option-btn:disabled {
+            cursor: default;
+        }
+        .option-btn.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .option-btn.correct-answer {
+            background: #00c853;
+            color: white;
+            border-color: #00a844;
+        }
+        .option-btn.wrong-answer {
+            background: #ff6b35;
+            color: white;
+            border-color: #e05a2a;
+        }
+        .feedback {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .feedback.correct {
+            background: #e8f5e9;
+            border-left: 4px solid #00c853;
+        }
+        .feedback.incorrect {
+            background: #fff3e0;
+            border-left: 4px solid #ff6b35;
+        }
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .feedback.correct .feedback-title {
+            color: #00a844;
+        }
+        .feedback.incorrect .feedback-title {
+            color: #e05a2a;
+        }
+        .quiz-progress {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 1rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .quiz-intro {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        .quiz-intro-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">ðŸ“¡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>ðŸŽ¯ Part 8: Knowledge Check</h1>
+        <p class="page-subtitle">Test Your GPS Understanding</p>
+    </header>
+
+    <main class="content-container">
+        <div class="quiz-intro">
+            <div class="quiz-intro-icon">ðŸ§ </div>
+            <h2>GPS Workshop Quiz</h2>
+            <p>Test your knowledge from the workshop! Click on an answer to see if you're correct.</p>
+        </div>
+
+        <div class="quiz-progress">
+            <span id="progress-text">Questions Answered: <strong>0</strong> / <strong>10</strong></span>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <!-- Question 1 -->
+            <div class="quiz-question" id="q1">
+                <div class="question-number">Question 1 of 10</div>
+                <div class="question-text">What is the umbrella term for all satellite-based navigation systems including GPS, GLONASS, Galileo, and BeiDou?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) GPS</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) GNSS</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) WAAS</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) RTK</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>GNSS (Global Navigation Satellite System)</strong> is the umbrella term that encompasses all satellite-based navigation systems. GPS is specifically the United States' system, while GNSS includes GPS, GLONASS (Russia), Galileo (EU), and BeiDou (China).</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>B) GNSS</strong>. GNSS (Global Navigation Satellite System) is the umbrella term that encompasses ALL satellite navigation systems. GPS is only the US system.</p>
+                </div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="quiz-question" id="q2">
+                <div class="question-number">Question 2 of 10</div>
+                <div class="question-text">How many satellites are needed at minimum for a GPS receiver to determine a 3D position fix?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) 2 satellites</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) 3 satellites</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) 4 satellites</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) 6 satellites</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>4 satellites</strong> are needed for a 3D fix. Three satellites give you X, Y, Z coordinates, but a fourth is required to solve for the receiver's clock error (since consumer GPS receivers don't have atomic clocks like satellites do).</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>C) 4 satellites</strong>. While 3 satellites could theoretically give 3D position, the 4th satellite is essential to correct for receiver clock errors.</p>
+                </div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="quiz-question" id="q3">
+                <div class="question-number">Question 3 of 10</div>
+                <div class="question-text">What mathematical concept does GPS use to calculate position from distance measurements?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) Triangulation</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) Trilateration</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) Interpolation</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) Triangular Regression</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>Trilateration</strong> uses only distance measurements to find a position. Unlike triangulation (which uses angles), trilateration determines position by finding where multiple spheres of known distances intersect.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>B) Trilateration</strong>. Many people confuse this with triangulation, but GPS uses distances (not angles) to calculate position.</p>
+                </div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="quiz-question" id="q4">
+                <div class="question-number">Question 4 of 10</div>
+                <div class="question-text">What does DOP stand for, and what does it measure?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) Distance of Position - how far you are from satellites</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) Dilution of Precision - how satellite geometry affects accuracy</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) Degree of Precision - the accuracy in degrees</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) Data Output Protocol - how GPS sends information</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>Dilution of Precision (DOP)</strong> describes how the geometric configuration of satellites affects position accuracy. When satellites are spread across the sky, DOP is low (good). When clustered together, DOP is high (poor accuracy).</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>B) Dilution of Precision</strong>. DOP measures how satellite geometry affects the accuracy of your position fix.</p>
+                </div>
+            </div>
+
+            <!-- Question 5 -->
+            <div class="quiz-question" id="q5">
+                <div class="question-number">Question 5 of 10</div>
+                <div class="question-text">Why can't GPS receivers determine position inside caves, underwater, or in most buildings?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) GPS signals are blocked by solid materials and water</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) There are no satellites orbiting over those areas</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) The receiver batteries drain faster indoors</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) GPS was designed only for outdoor use</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>GPS satellite signals cannot pass through solid materials</strong> like rock, concrete, metal roofs, or water. The signals travel at the speed of light but are absorbed or blocked by dense materials, making indoor positioning impossible with GPS alone.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>A) GPS signals are blocked by solid materials and water</strong>. GPS signals can't penetrate rock, concrete, metal, or water - they need a clear line of sight to satellites.</p>
+                </div>
+            </div>
+
+            <!-- Question 6 -->
+            <div class="quiz-question" id="q6">
+                <div class="question-number">Question 6 of 10</div>
+                <div class="question-text">What is the approximate altitude of GPS satellites above Earth?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) 400 km (like the ISS)</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) 2,000 km</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) 20,200 km</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) 36,000 km (geostationary orbit)</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p>GPS satellites orbit at approximately <strong>20,200 km</strong> in Medium Earth Orbit (MEO). This is much higher than the ISS (400 km) but lower than geostationary satellites (36,000 km). At this altitude, each satellite completes 2 orbits per day.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>C) 20,200 km</strong>. GPS satellites are in Medium Earth Orbit, completing two full orbits around Earth every day.</p>
+                </div>
+            </div>
+
+            <!-- Question 7 -->
+            <div class="quiz-question" id="q7">
+                <div class="question-number">Question 7 of 10</div>
+                <div class="question-text">Which GPS signal frequency is used by most civilian receivers?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) L1 (1575.42 MHz)</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) L2 (1227.60 MHz)</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) L5 (1176.45 MHz)</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) P-code (military only)</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p>The <strong>L1 signal (1575.42 MHz)</strong> is the primary civilian GPS frequency. It carries the C/A (Coarse Acquisition) code that most phones and consumer GPS devices use. L2 and L5 are used by more advanced receivers for improved accuracy.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>A) L1 (1575.42 MHz)</strong>. This is the main civilian frequency used by smartphones, car GPS, and basic receivers like our Arduino NEO-6M module.</p>
+                </div>
+            </div>
+
+            <!-- Question 8 -->
+            <div class="quiz-question" id="q8">
+                <div class="question-number">Question 8 of 10</div>
+                <div class="question-text">Why is horizontal GPS accuracy typically better than vertical accuracy?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) Satellites move horizontally, not vertically</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) All visible satellites are above the horizon, creating poor vertical geometry</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) The Earth blocks vertical signals</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) GPS was designed for marine navigation only</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p><strong>All satellites are above the horizon</strong> from a ground receiver's perspective. This means the geometric intersection of satellite signals is better distributed horizontally than vertically. Vertical accuracy is typically 1.5 to 2 times worse than horizontal accuracy.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>B) All visible satellites are above the horizon</strong>. Since no satellites are below you, the vertical geometry (VDOP) is always worse than horizontal geometry (HDOP).</p>
+                </div>
+            </div>
+
+            <!-- Question 9 -->
+            <div class="quiz-question" id="q9">
+                <div class="question-number">Question 9 of 10</div>
+                <div class="question-text">What is the typical accuracy of a smartphone or recreational GPS receiver?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) 1 centimeter</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) 1 meter</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) About 3-15 meters</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) 100 meters</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p>Consumer-grade GPS (smartphones, handheld units, Arduino modules like our NEO-6M) typically achieves <strong>3-15 meter accuracy</strong>. Survey-grade equipment using RTK can achieve centimeter accuracy, but requires expensive dual-frequency receivers.</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>C) About 3-15 meters</strong>. Consumer GPS devices, including our Arduino builds, typically have 3-15 meter accuracy in good conditions.</p>
+                </div>
+            </div>
+
+            <!-- Question 10 -->
+            <div class="quiz-question" id="q10">
+                <div class="question-number">Question 10 of 10</div>
+                <div class="question-text">How did Eratosthenes calculate Earth's circumference around 240 BCE, using the same geometric principle that GPS uses today?</div>
+                <ul class="options-list">
+                    <li class="option-item"><button class="option-btn" data-answer="a">A) He measured star positions from different locations</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="b">B) He measured shadow angles at two cities a known distance apart</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="c">C) He sailed around the entire Earth</button></li>
+                    <li class="option-item"><button class="option-btn" data-answer="d">D) He used a primitive telescope</button></li>
+                </ul>
+                <div class="feedback correct">
+                    <div class="feedback-title">âœ… Correct!</div>
+                    <p>Eratosthenes noticed that on the summer solstice, the sun cast <strong>no shadow in Syene (Aswan) but cast a 7.2Â° shadow in Alexandria</strong>. He knew the distance between the cities (~800 km) and calculated: if 7.2Â° = 800 km, then 360Â° = ~40,000 km. This is remarkably close to Earth's actual circumference!</p>
+                </div>
+                <div class="feedback incorrect">
+                    <div class="feedback-title">âŒ Not quite!</div>
+                    <p>The correct answer is <strong>B) He measured shadow angles at two cities</strong>. Using the difference in sun angle between Alexandria and Syene, combined with the known distance between them, he calculated Earth's circumference within a few percent of the actual value!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-buttons">
+            <a href="field-testing.html" class="nav-btn prev">â† Field Testing</a>
+            <a href="index.html" class="nav-btn next">Back to Home â†’</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">ðŸ“¡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University â€¢ Strasbourg, France â€¢ January 2026</p>
+            <p class="footer-love">Made with â¤ï¸ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Quiz functionality
+        const correctAnswers = {
+            q1: 'b', q2: 'c', q3: 'b', q4: 'b', q5: 'a',
+            q6: 'c', q7: 'a', q8: 'b', q9: 'c', q10: 'b'
+        };
+        
+        let answered = 0;
+        
+        document.querySelectorAll('.quiz-question').forEach(question => {
+            const questionId = question.id;
+            const buttons = question.querySelectorAll('.option-btn');
+            const correctFeedback = question.querySelector('.feedback.correct');
+            const incorrectFeedback = question.querySelector('.feedback.incorrect');
+            
+            buttons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (question.classList.contains('answered')) return;
+                    
+                    question.classList.add('answered');
+                    const selectedAnswer = this.dataset.answer;
+                    const isCorrect = selectedAnswer === correctAnswers[questionId];
+                    
+                    // Disable all buttons
+                    buttons.forEach(b => b.disabled = true);
+                    
+                    // Show selected
+                    this.classList.add('selected');
+                    
+                    if (isCorrect) {
+                        question.classList.add('correct');
+                        this.classList.add('correct-answer');
+                        correctFeedback.classList.add('show');
+                    } else {
+                        question.classList.add('incorrect');
+                        this.classList.add('wrong-answer');
+                        // Show correct answer
+                        buttons.forEach(b => {
+                            if (b.dataset.answer === correctAnswers[questionId]) {
+                                b.classList.add('correct-answer');
+                            }
+                        });
+                        incorrectFeedback.classList.add('show');
+                    }
+                    
+                    // Update progress
+                    answered++;
+                    document.getElementById('progress-text').innerHTML = 
+                        `Questions Answered: <strong>${answered}</strong> / <strong>10</strong>`;
+                    document.getElementById('progress-fill').style.width = `${answered * 10}%`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+

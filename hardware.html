@@ -1,0 +1,276 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hardware Assembly | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Part 4: Hardware Assembly</h1>
+        <p class="page-subtitle">Building Your GPS Receiver</p>
+    </header>
+
+    <main class="content-container">
+        <div style="width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; height: 450px; overflow: hidden; margin-bottom: 3rem; box-shadow: 0 4px 25px rgba(0,0,0,0.2);">
+            <img src="images/hardware_banner.jpg" alt="GPS Hardware Assembly Banner" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li>Identify GPS module components</li>
+                <li>Wire the GPS module to Arduino</li>
+                <li>Understand serial communication basics</li>
+            </ul>
+        </section>
+
+                <section class="content-section">
+            <h2>Equipment List (Per Group)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Quantity</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Arduino Mega 2560 or Uno</td>
+                        <td>1</td>
+                        <td>Microcontroller</td>
+                    </tr>
+                    <tr>
+                        <td>GY-NEO6MV2 GPS Module</td>
+                        <td>1</td>
+                        <td>u-blox NEO-6M based</td>
+                    </tr>
+                    <tr>
+                        <td>Breadboard</td>
+                        <td>1</td>
+                        <td>Optional prototyping tool</td>
+                    </tr>
+                    <tr>
+                        <td>Jumper wires (M-M)</td>
+                        <td>4+</td>
+                        <td>For connections</td>
+                    </tr>
+                    <tr>
+                        <td>USB cable</td>
+                        <td>1</td>
+                        <td>Power and programming</td>
+                    </tr>
+                    <tr>
+                        <td>Laptop with Arduino IDE</td>
+                        <td>1</td>
+                        <td>For programming</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box tip" style="margin-top: 2rem;">
+                <p><strong>💡 Note on Breadboards:</strong> For this workshop, we will connect the GPS module <strong>directly</strong> to the Arduino pins for simplicity and reliability. However, a breadboard is included in your kit if you wish to use it for prototyping or designing more complex systems in the future!</p>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <div style="display: inline-block; max-width: 100%; overflow: hidden;">
+                    <img src="images/equipment_overview.jpg" alt="GPS Workshop Equipment Overview" style="width: 100%; max-width: 400px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); transform: rotate(90deg); margin: 15% 0;">
+                </div>
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Your kit: Arduino Uno R4 WiFi, NEO-6M GPS Module, and Patch Antenna.</em></p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Understanding the GPS Module</h2>
+
+            <h3>GY-NEO6MV2 Specifications</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Specification</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Chipset</td><td>u-blox NEO-6M</td></tr>
+                    <tr><td>Channels</td><td>50 channels</td></tr>
+                    <tr><td>Update Rate</td><td>1-5 Hz</td></tr>
+                    <tr><td>Position Accuracy</td><td>2.5 m CEP</td></tr>
+                    <tr><td>Cold Start</td><td>27 seconds</td></tr>
+                    <tr><td>Warm Start</td><td>1 second</td></tr>
+                    <tr><td>Voltage</td><td>3.3V - 5V</td></tr>
+                    <tr><td>Interface</td><td>UART (Serial)</td></tr>
+                </tbody>
+            </table>
+
+                        <h3>Module Pins</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Pin</th>
+                        <th>Function</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>VCC</strong></td>
+                        <td>Power</td>
+                        <td>Connect to 5V (provides "juice")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GND</strong></td>
+                        <td>Ground</td>
+                        <td>Connect to GND (completes circuit)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TX</strong></td>
+                        <td>Transmit</td>
+                        <td>GPS "Talks" (connect to Arduino RX)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>RX</strong></td>
+                        <td>Receive</td>
+                        <td>GPS "Listens" (connect to Arduino TX)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/gps_module_pins.jpg" alt="GPS Module Pin Labels" style="max-width: 400px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Reference the labels on the back of your module (VCC, RX, TX, GND).</em></p>
+            </div>
+
+            <h3>Antenna Types Comparison</h3>
+            <p>Different GPS applications use different antenna designs. Our NEO-6M module uses a small <strong>patch antenna</strong>, while professional applications use larger antennas for better accuracy:</p>
+            
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/antenna_types.png" alt="GPS Antenna Types" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p class="figure-attribution">GPS antenna types: Patch (L1 only, cell phones), Helical (L1/L2/L5), Survey-grade (highest precision).<br>Source: <a href="https://gistbok-ltb.ucgis.org/page/34/concept/10599" target="_blank">Hodgson, 2025 - GIS&T BoK</a></p>
+            </div>
+        </section>
+
+                <section class="content-section">
+            <h2>Wiring & Assembly</h2>
+            
+            <h3>📋 Step-by-Step Assembly Instructions</h3>
+            <p>Follow these steps in order to assemble your GPS receiver:</p>
+            
+            <div style="background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 1.5rem; border-radius: 12px; margin: 1.5rem 0;">
+                <ol style="margin-left: 1.5rem; line-height: 2.2;">
+                    <li><strong>Gather your components</strong> - Lay out the Arduino, GPS module, jumper wires, and USB cable on your workspace</li>
+                    <li><strong>Connect the jumper wires</strong> - Using 4 male-to-male jumper wires, make the following connections:
+                        <ul style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
+                            <li>GPS <strong>VCC</strong> → Arduino <strong>5V</strong> (power)</li>
+                            <li>GPS <strong>GND</strong> → Arduino <strong>GND</strong> (ground)</li>
+                            <li>GPS <strong>TX</strong> → Arduino <strong>Pin 0 (RX)</strong></li>
+                            <li>GPS <strong>RX</strong> → Arduino <strong>Pin 1 (TX)</strong></li>
+                        </ul>
+                    </li>
+                    <li><strong>Attach the GPS antenna</strong> - Click the small patch antenna connector into the GPS module (you'll hear/feel a small snap)</li>
+                    <li><strong>Double-check all connections</strong> - Verify each wire is firmly seated in the correct pin</li>
+                    <li><strong>Plug in the USB cable</strong> - Connect the USB cable to the Arduino board</li>
+                    <li><strong>Connect to your computer</strong> - Plug the other end of the USB cable into your laptop</li>
+                    <li><strong>Verify power</strong> - The Arduino's power LED should light up. If not, check your connections!</li>
+                </ol>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/arduino_gps_connection.jpg" alt="Active Arduino Uno R4 WiFi and GPS Connection" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Completed build with Arduino Uno R4 WiFi, NEO-6M module, and patch antenna.</em></p>
+            </div>
+
+            <div class="info-box note" style="border-left: 4px solid var(--secondary);">
+                <h3 style="color: var(--secondary); margin-bottom: 1rem;">✅ Final Connection Checklist</h3>
+                <p>To make sure it powers on correctly, please double-check these exact spots on your <strong>Arduino Uno R4 WiFi</strong>:</p>
+                
+                <table style="width: 100%; margin-top: 1rem;">
+                    <thead>
+                        <tr>
+                            <th>GPS Pin</th>
+                            <th>Arduino Pin</th>
+                            <th>Why?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>VCC</strong></td><td><strong>5V</strong></td><td>This provides the "juice" to the module.</td></tr>
+                        <tr><td><strong>GND</strong></td><td><strong>GND</strong></td><td>This completes the circuit.</td></tr>
+                        <tr><td><strong>TX</strong></td><td><strong>Pin 0 (RX)</strong></td><td>The GPS "Talks" (TX) and the Arduino "Listens" (RX).</td></tr>
+                        <tr><td><strong>RX</strong></td><td><strong>Pin 1 (TX)</strong></td><td>The Arduino "Talks" (TX) and the GPS "Listens" (RX).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="info-box tip">
+                <h4>💡 Power Check</h4>
+                <p>When you plug in the USB cable, you should see the <strong>Arduino board light up</strong> (power LED turns on). If the board does not light up:</p>
+                <ul>
+                    <li>Check that the USB cable is fully plugged in on both ends</li>
+                    <li>Try a different USB port on your laptop</li>
+                    <li>Verify that your wires are connected correctly - an incorrect connection may prevent power</li>
+                    <li>Make sure VCC goes to 5V and GND goes to GND</li>
+                </ul>
+            </div>
+
+            <div class="info-box warning">
+                <h4>Important Notes</h4>
+                <ul>
+                    <li>The GPS module needs a <strong>clear view of the sky</strong> to acquire satellites</li>
+                    <li>First fix (cold start) can take <strong>1-2 minutes</strong> outdoors</li>
+                    <li>Indoors, you may not get a fix - test near a window or outside</li>
+                    <li>The module has a small LED that will <strong>blink</strong> when it has a fix. No blink = no fix.</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="errors.html" class="nav-btn prev">&larr; Errors</a>
+            <a href="software.html" class="nav-btn next">Software &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+

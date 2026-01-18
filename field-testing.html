@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Field Testing | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="eratosthenes.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Part 6: Field Testing</h1>
+        <p class="page-subtitle">Taking Your GPS Unit Outdoors</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li>Conduct outdoor GPS measurements</li>
+                <li>Apply practical tips for best results</li>
+                <li>Record and analyze waypoint data</li>
+                <li>Evaluate GPS accuracy</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>🧪 Jump to Experiments</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                <a href="#experiment-1" style="display: block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.25rem; border-radius: 12px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">✅</div>
+                    <strong style="font-size: 1.1rem;">Experiment 1</strong>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.95rem;">Device Validation</p>
+                </a>
+                <a href="#experiment-2" style="display: block; background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 1.25rem; border-radius: 12px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">📏</div>
+                    <strong style="font-size: 1.1rem;">Experiment 2</strong>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.95rem;">Distance Measurement</p>
+                </a>
+                <a href="#experiment-3" style="display: block; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.25rem; border-radius: 12px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🌍</div>
+                    <strong style="font-size: 1.1rem;">Experiment 3</strong>
+                    <p style="margin: 0.5rem 0 0 0; opacity: 0.9; font-size: 0.95rem;">Earth's Circumference</p>
+                </a>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 1.5rem; border-radius: 12px; margin-top: 1.5rem; text-align: center;">
+                <h4 style="margin-bottom: 0.75rem;">📋 Printable Lab Worksheet</h4>
+                <p style="margin-bottom: 1rem; opacity: 0.9;">Print this worksheet to record your data and calculations for all three experiments:</p>
+                <a href="lab-worksheet.html" target="_blank" style="display: inline-block; background: white; color: #1a1a2e; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s;">🖨️ Open Printable Worksheet</a>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Equipment Checklist</h2>
+            <ul>
+                <li>Arduino + GPS unit (assembled and tested)</li>
+                <li>Laptop with Arduino IDE</li>
+                <li>USB cable (long enough or power bank)</li>
+                <li>Notebook for recording data</li>
+                <li>Phone GPS for comparison (optional)</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>🛠️ GPS Options for This Lab</h2>
+            <p>You can complete this lab using <strong>any device that provides GPS coordinates</strong>. Choose the option that works best for you:</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin-top: 1.5rem;">
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🔧</div>
+                    <strong style="font-size: 0.85rem;">Arduino GPS Unit</strong>
+                    <p style="font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem; line-height: 1.3;">The unit you built in this workshop</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">📱</div>
+                    <strong style="font-size: 0.85rem;">Smartphone App</strong>
+                    <p style="font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem; line-height: 1.3;">Any GPS app (GPS Status, Compass, Maps)</p>
+                </div>
+                <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🧭</div>
+                    <strong style="font-size: 0.85rem;">Commercial GPS</strong>
+                    <p style="font-size: 0.75rem; opacity: 0.9; margin-top: 0.25rem; line-height: 1.3;">Garmin, Magellan, or similar handheld</p>
+                </div>
+                <a href="https://sounny.github.io/gps/" target="_blank" style="background: linear-gradient(135deg, #ff9a56 0%, #ff6b35 100%); color: white; padding: 1rem; border-radius: 10px; text-align: center; text-decoration: none; transition: transform 0.2s;">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.25rem;">🌐</div>
+                    <strong style="font-size: 0.85rem;">Online GPS Web App</strong>
+                    <p style="font-size: 0.7rem; opacity: 0.95; margin-top: 0.25rem; line-height: 1.3; font-family: monospace;">sounny.github.io/gps</p>
+                </a>
+            </div>
+
+            <div class="info-box tip" style="margin-top: 1.5rem;">
+                <p><strong>Hardware or Software Issues?</strong> If your Arduino GPS unit didn't work, don't worry! You can still complete all three experiments using any of the alternatives above. The <a href="https://sounny.github.io/gps/" target="_blank" style="color: inherit; text-decoration: underline; font-weight: 600;">Online GPS Web App</a> works on any device with GPS capabilities (laptop, tablet, or phone with location services enabled).</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="experiment-1">Experiment 1: Device Validation</h2>
+            <p>Before collecting detailed data, you must first verify that your GPS unit is working correctly. This initial test confirms your device can acquire satellites and provide accurate position data.</p>
+
+            <h3>Step-by-Step Validation</h3>
+            <ol>
+                <li><strong>Take your assembled GPS unit outside</strong> - Find a location with a clear view of the sky (avoid buildings, overhangs)</li>
+                <li><strong>Power on and wait for satellite fix</strong> - Watch the Serial Monitor for satellite count. Wait until you see <strong>4 or more satellites</strong> connected</li>
+                <li><strong>Record the coordinates</strong> - Write down the Latitude and Longitude displayed (e.g., 48.584330, 7.750720)</li>
+                <li><strong>Open Google Maps</strong> on your phone or laptop</li>
+                <li><strong>Enter the coordinates</strong> in the search bar - Type: <code>latitude, longitude</code> (e.g., "48.584330, 7.750720")</li>
+                <li><strong>Switch to Satellite View</strong> - Click on "Satellite" or "Layers" to see aerial imagery</li>
+                <li><strong>Verify your position</strong> - Does the pin match where you are standing?</li>
+            </ol>
+
+            <div class="info-box note">
+                <p><strong>Important:</strong> Aerial imagery in Google Maps can have <strong>3-10 meters of positional error</strong>. Combined with your GPS error of approximately 15 meters, you should expect the pin to be within <strong>10-20 meters</strong> of your actual location. If you can visually confirm you are in the general area shown (same building, same courtyard, same intersection), your device is working correctly!</p>
+            </div>
+
+            <h3>Validation Checklist</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Check</th>
+                        <th>Expected Result</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Satellites detected</td>
+                        <td>4 or more satellites</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Valid coordinates</td>
+                        <td>Latitude and Longitude displayed (not "INVALID")</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Google Maps verification</td>
+                        <td>Pin within 10-20 meters of actual location</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>HDOP value</td>
+                        <td>Less than 5 (Good or Excellent)</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box tip">
+                <p><strong>Tip:</strong> If Google Maps shows your position is wildly off (100+ meters or in a different country), double-check that you copied the coordinates correctly and that you are using decimal degrees format, not degrees-minutes-seconds.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Practical Tips for GPS Users</h2>
+            <p>These tips will help you get the best results from your GPS unit:</p>
+
+            <h3>Cell Phone Interference</h3>
+            <ul>
+                <li>Cell phones emit microwaves that can <strong>interfere with GPS signals</strong></li>
+                <li><strong>Solution:</strong> Put your phone in <strong>airplane mode</strong> if it is near the GPS unit</li>
+                <li>Keep phones at least 1 meter away from the GPS receiver</li>
+            </ul>
+
+            <h3>Body Positioning</h3>
+            <ul>
+                <li>Your body can <strong>block GPS signals</strong>!</li>
+                <li><strong>Solution:</strong> Hold the GPS unit <strong>away from your body</strong></li>
+                <li>Position the antenna facing upward toward the sky</li>
+                <li>Note: Trees and foliage usually do NOT block signals significantly</li>
+            </ul>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/student_field_gps.png" alt="Student holding a GPS unit in the field" style="width: 100%; max-width: 400px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Best practice: Hold the receiver away from your body for the clearest signal.</em></p>
+            </div>
+
+            <h3>Data Backup</h3>
+            <ul>
+                <li>Do <strong>NOT rely solely</strong> on the device's storage</li>
+                <li><strong>Solution:</strong> Take a <strong>photo of the screen</strong> or write down the coordinates</li>
+                <li>Consider logging data to a file for later analysis</li>
+            </ul>
+
+            <h3>Recommended Settings</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Setting</th>
+                        <th>Recommended Value</th>
+                        <th>Why</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td data-label="Setting"><strong>Datum</strong></td>
+                        <td data-label="Recommended Value">WGS 1984</td>
+                        <td data-label="Why">This is the native standard for GPS (World Geodetic System 1984)</td>
+                    </tr>
+                    <tr>
+                        <td data-label="Setting"><strong>Coordinate Format</strong></td>
+                        <td data-label="Recommended Value">Degrees, Minutes, Decimal Seconds</td>
+                        <td data-label="Why">Most precise reading format</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Confirming a Good Fix</h3>
+            <ul>
+                <li>Look for <strong>four black bars</strong> (or similar indicator) on the satellite page</li>
+                <li>This confirms you have a solid fix</li>
+                <li>Wait until you have at least 4 satellites before recording data</li>
+            </ul>
+
+            <div class="trilateration-grid" style="margin-top: 2rem;">
+                <div class="trilateration-card">
+                    <img src="images/gps_screen_status.jpeg" alt="GPS Satellite Status Screen" style="height: 150px; object-fit: contain;">
+                    <h4>1. Satellite Status</h4>
+                    <p>Shows satellite signal strength and your current accuracy.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/gps_screen_map.jpeg" alt="GPS Map Screen" style="height: 150px; object-fit: contain;">
+                    <h4>2. Map View</h4>
+                    <p>Visualizes your position and tracks on a background map.</p>
+                </div>
+                <div class="trilateration-card">
+                    <img src="images/gps_screen_compass.jpeg" alt="GPS Compass Screen" style="height: 150px; object-fit: contain;">
+                    <h4>3. Navigation</h4>
+                    <p>Uses a compass ring to guide you toward a waypoint.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="experiment-2">Experiment 2: Distance Measurement</h2>
+            <p>In this experiment, you will validate your GPS accuracy by comparing GPS-calculated distance to a known distance measured by pacing.</p>
+
+            <h3>Procedure</h3>
+            <ol>
+                <li><strong>Find an open field</strong> with a clear view of the sky (soccer field, park, open courtyard)</li>
+                <li><strong>Take Position A measurement</strong> - Stand at one end and record your GPS coordinates:
+                    <ul>
+                        <li>Latitude A: _____________</li>
+                        <li>Longitude A: _____________</li>
+                    </ul>
+                </li>
+                <li><strong>Pace out the distance</strong> - Walk in a straight line, using approximately 1-meter strides</li>
+                <li><strong>Count your steps</strong> - Walk at least <strong>50 steps</strong> (50 meters), but <strong>100 steps is best</strong> for more accurate results</li>
+                <li><strong>Take Position B measurement</strong> - At your endpoint, record GPS coordinates:
+                    <ul>
+                        <li>Latitude B: _____________</li>
+                        <li>Longitude B: _____________</li>
+                    </ul>
+                </li>
+                <li><strong>Record your step count</strong>: _____________ steps (approximately _____ meters)</li>
+            </ol>
+
+            <h3>Data Recording Form</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Measurement</th>
+                        <th>Position A (Start)</th>
+                        <th>Position B (End)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Latitude</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Longitude</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Satellites</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>HDOP</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+            <p><strong>Step Count:</strong> _______ steps &times; 1 meter = <strong>_______ meters (paced distance)</strong></p>
+
+            <h3>Calculate GPS Distance</h3>
+            <p>Use an online calculator to find the distance between your two GPS points:</p>
+            <ol>
+                <li>Go to <a href="https://sounny.github.io/latlongdist/" target="_blank"><strong>Sounny's Lat/Long Distance Calculator</strong></a> (recommended) or <a href="https://www.movable-type.co.uk/scripts/latlong.html" target="_blank">Movable Type Calculator</a></li>
+                <li>Enter Point A coordinates (Latitude, Longitude)</li>
+                <li>Enter Point B coordinates (Latitude, Longitude)</li>
+                <li>Read the distance in meters</li>
+            </ol>
+            <p><strong>GPS-Calculated Distance:</strong> _______ meters</p>
+
+            <h3>Analysis</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Comparison</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Paced Distance (steps &times; 1m)</td>
+                        <td>_______ meters</td>
+                    </tr>
+                    <tr>
+                        <td>GPS-Calculated Distance</td>
+                        <td>_______ meters</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Difference (Error)</strong></td>
+                        <td>_______ meters</td>
+                    </tr>
+                    <tr>
+                        <td>Percentage Error</td>
+                        <td>_______ %</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box note">
+                <p><strong>Expected Results:</strong> With recreational-grade GPS (15m accuracy at each point), you might see a combined error of up to 20-30 meters. If your paced distance was 100 meters and GPS shows 85-115 meters, your device is performing within expected parameters!</p>
+            </div>
+
+            <div class="info-box tip">
+                <p><strong>Pro Tip:</strong> For better accuracy, average your stride length before the experiment. Walk 10 normal paces and measure the total distance, then divide by 10 to get your actual stride length.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2 id="experiment-3">Experiment 3: Calculate Earth's Circumference</h2>
+            <p>In this classic experiment, you will recreate the method used by <strong>Eratosthenes</strong> over 2,000 years ago to calculate Earth's circumference - but using modern GPS technology!</p>
+
+            <div class="info-box note">
+                <p><strong>Historical Context:</strong> Around 240 BCE, the Greek scholar Eratosthenes calculated Earth's circumference by measuring the angle of the sun's shadow at two locations a known distance apart. He got remarkably close to the true value! You will use the same mathematical principle, but with GPS coordinates instead of sun shadows.</p>
+            </div>
+
+            <h3>The Mathematical Principle</h3>
+            <p>If you travel a certain distance along Earth's surface, you also travel through a certain angle of Earth's curvature. The ratio of your distance to that angle equals the ratio of Earth's full circumference to 360 degrees:</p>
+
+            <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); color: #fff; padding: 1.5rem 2rem; border-radius: 12px; text-align: center; margin: 1.5rem 0; font-family: 'JetBrains Mono', monospace;">
+                <div style="font-size: 1.3rem; margin-bottom: 0.5rem;">Distance / Angle = Circumference / 360&deg;</div>
+                <div style="font-size: 1.1rem; color: rgba(255,255,255,0.8);">Therefore: <strong>Circumference = (Distance / Angle) &times; 360</strong></div>
+            </div>
+
+            <h3>Procedure</h3>
+            <p>Using your data from Experiment 2:</p>
+            <ol>
+                <li><strong>Calculate the angular difference</strong> between your two GPS points</li>
+                <li><strong>Use the formula</strong> to calculate Earth's circumference</li>
+                <li><strong>Compare to the actual value</strong> (approximately 40,075 km)</li>
+            </ol>
+
+            <h3>Step 1: Calculate Angular Difference</h3>
+            <p>The simplest approach is to calculate the latitude difference (if you walked roughly north-south):</p>
+            
+            <div style="background: #e8f5e9; border-left: 4px solid #00c853; padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 8px 8px 0;">
+                <p><strong>Angular Difference (degrees) = |Latitude B - Latitude A|</strong></p>
+                <p>Example: If Latitude A = 48.58400 and Latitude B = 48.58490</p>
+                <p>Angular Difference = |48.58490 - 48.58400| = <strong>0.00090 degrees</strong></p>
+            </div>
+
+            <p>For more accurate results (if you walked at an angle), use <a href="https://sounny.github.io/latlongdist/" target="_blank"><strong>Sounny's Lat/Long Distance Calculator</strong></a> or the <a href="https://www.movable-type.co.uk/scripts/latlong.html" target="_blank">Haversine formula calculator</a> which accounts for both latitude and longitude changes.</p>
+
+            <h3>Step 2: Calculate Circumference</h3>
+            <p>Apply the formula:</p>
+            
+            <div style="background: #e8f5e9; border-left: 4px solid #00c853; padding: 1rem 1.5rem; margin: 1rem 0; border-radius: 0 8px 8px 0;">
+                <p><strong>Circumference = (Distance / Angular Difference) &times; 360</strong></p>
+                <p>Example: If Distance = 100 meters and Angular Difference = 0.00090 degrees</p>
+                <p>Circumference = (100 / 0.00090) &times; 360 = 111,111 &times; 360 = <strong>40,000,000 meters = 40,000 km</strong></p>
+            </div>
+
+            <h3>Data Recording</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Measurement</th>
+                        <th>Your Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Distance walked (from Experiment 2)</td>
+                        <td>_______ meters</td>
+                    </tr>
+                    <tr>
+                        <td>Latitude A</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Latitude B</td>
+                        <td>_______</td>
+                    </tr>
+                    <tr>
+                        <td>Angular Difference (|Lat B - Lat A|)</td>
+                        <td>_______ degrees</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Calculated Circumference</strong></td>
+                        <td>_______ km</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Compare to Actual Value</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Comparison</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Your Calculated Circumference</td>
+                        <td>_______ km</td>
+                    </tr>
+                    <tr>
+                        <td>Actual Earth Circumference (equatorial)</td>
+                        <td>40,075 km</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Error</strong></td>
+                        <td>_______ km (_______ %)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box tip">
+                <p><strong>Discussion Questions:</strong></p>
+                <ul>
+                    <li>How close did your calculation come to the actual value?</li>
+                    <li>What sources of error affected your result?</li>
+                    <li>How could you improve the accuracy of this experiment?</li>
+                    <li>Why did Eratosthenes need the sun, while you could use GPS?</li>
+                </ul>
+            </div>
+
+            <div class="info-box note">
+                <p><strong>Note:</strong> Small measurement errors get amplified when calculating large values. If your GPS positions were off by just 10 meters, this could result in circumference errors of thousands of kilometers! This demonstrates both the power and limitations of GPS for precise measurements.</p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>Data Collection Form</h2>
+            <p>Visit <strong>3-5 waypoints</strong> around the ISU campus and record GPS data:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Waypoint</th>
+                        <th>Description</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Altitude (m)</th>
+                        <th>Satellites</th>
+                        <th>HDOP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>2</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>3</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>4</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                    <tr><td>5</td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Testing Accuracy</h2>
+
+            <h3>Method 1: Compare to Known Point</h3>
+            <ol>
+                <li>Go to a surveyed benchmark or known location</li>
+                <li>Record your GPS coordinates</li>
+                <li>Calculate the difference from the known coordinates</li>
+            </ol>
+
+            <h3>Method 2: Repeat Measurements</h3>
+            <ol>
+                <li>Stand at one location for 5 minutes</li>
+                <li>Record coordinates every 30 seconds</li>
+                <li>Calculate the spread (standard deviation)</li>
+            </ol>
+
+            <h3>Method 3: Compare to Phone GPS</h3>
+            <ol>
+                <li>Open Google Maps or GPS app on your phone</li>
+                <li>Compare readings with your Arduino GPS</li>
+                <li>Note any differences</li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2>Environmental Effects</h2>
+            <p>Test GPS performance in different environments:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Environment</th>
+                        <th>Expected Effect</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Open field</td><td>Best accuracy, many satellites</td></tr>
+                    <tr><td>Near buildings</td><td>Possible multipath, fewer satellites</td></tr>
+                    <tr><td>Under trees</td><td>Reduced signal, slower fix</td></tr>
+                    <tr><td>Indoors</td><td>May not work</td></tr>
+                    <tr><td>Near water</td><td>Good reflection possible</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Data Analysis Questions</h2>
+            <p>After collecting field data, answer these questions:</p>
+            <ol>
+                <li><strong>How many satellites</strong> did you typically see? How did this vary by location?</li>
+                <li><strong>What was your typical HDOP</strong> value? How did this affect accuracy?</li>
+                <li><strong>How close</strong> were your readings to known locations or your phone GPS?</li>
+                <li><strong>Did the environment</strong> affect your results? (buildings, trees, etc.)</li>
+                <li><strong>How long</strong> did it take to get a first fix in different locations?</li>
+            </ol>
+        </section>
+
+        <section class="content-section">
+            <h2>Workshop Assessment</h2>
+            <p>Each group should complete:</p>
+            <ol>
+                <li><strong>Assembled GPS unit</strong> - Working hardware with successful satellite fix</li>
+                <li><strong>Field data</strong> - Completed data collection form from 3-5 waypoints</li>
+                <li><strong>Analysis summary</strong> - Answers to the analysis questions above</li>
+                <li><strong>Accuracy report</strong> - Comparison of readings to reference points</li>
+            </ol>
+
+            <h3>Grading Criteria</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Criterion</th>
+                        <th>Points</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Hardware Assembly</td><td>25</td><td>Unit properly wired and functional</td></tr>
+                    <tr><td>Satellite Fix</td><td>25</td><td>Successfully acquired GPS fix outdoors</td></tr>
+                    <tr><td>Field Data Collection</td><td>25</td><td>Complete data from all waypoints</td></tr>
+                    <tr><td>Data Analysis</td><td>25</td><td>Thoughtful answers to analysis questions</td></tr>
+                    <tr><td><strong>Total</strong></td><td><strong>100</strong></td><td></td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Useful Resources</h2>
+            <ul>
+                <li><strong>Mapping Your Data:</strong> <a href="https://www.google.com/mymaps" target="_blank">Google My Maps</a></li>
+                <li><strong>GPS Visualization:</strong> <a href="https://www.gpsvisualizer.com" target="_blank">GPS Visualizer</a></li>
+                <li><strong>u-blox NEO-6M Datasheet:</strong> <a href="https://www.u-blox.com" target="_blank">u-blox.com</a></li>
+                <li><strong>TinyGPS++ Library:</strong> <a href="https://github.com/mikalhart/TinyGPSPlus" target="_blank">GitHub / TinyGPSPlus</a></li>
+            </ul>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="eratosthenes.html" class="nav-btn prev">&larr; Eratosthenes</a>
+            <a href="quiz.html" class="nav-btn next">Quiz &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,250 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Error Sources | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+                        <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="errors.html">Errors</a></li>
+                <li><a href="hardware.html">Hardware</a></li>
+                <li><a href="software.html">Software</a></li>
+                <li><a href="eratosthenes.html">Eratosthenes</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <h1>Part 3: GPS Error Sources</h1>
+        <p class="page-subtitle">Understanding and Improving Accuracy</p>
+    </header>
+
+    <main class="content-container">
+        <section class="content-section">
+            <h2>Learning Objectives</h2>
+            <ul>
+                <li>Identify the main sources of GPS error</li>
+                <li>Understand Dilution of Precision (DOP)</li>
+                <li>Learn accuracy levels from recreational to survey grade</li>
+            </ul>
+        </section>
+
+        <section class="content-section">
+            <h2>Error Sources</h2>
+            <p>Several factors can affect GPS accuracy:</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Error Source</th>
+                        <th>Typical Error</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ionospheric delay</strong></td>
+                        <td>+/- 5 m</td>
+                        <td>Signal slows through ionized atmosphere</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Tropospheric delay</strong></td>
+                        <td>+/- 0.5 m</td>
+                        <td>Signal slows through lower atmosphere</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Satellite clock error</strong></td>
+                        <td>+/- 2 m</td>
+                        <td>Even atomic clocks have small errors</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Orbital errors</strong></td>
+                        <td>+/- 2.5 m</td>
+                        <td>Satellite position uncertainty</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Multipath</strong></td>
+                        <td>+/- 1 m</td>
+                        <td>Signals bouncing off buildings/surfaces</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Receiver noise</strong></td>
+                        <td>+/- 0.3 m</td>
+                        <td>Electronic noise in receiver</td>
+                    </tr>
+                    <tr>
+                        <td><strong>PDOP (geometry)</strong></td>
+                        <td>Variable</td>
+                        <td>Poor satellite geometry increases error</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="content-section">
+            <h2>Dilution of Precision (DOP)</h2>
+            <p>DOP describes how satellite geometry affects position accuracy.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>DOP Type</th>
+                        <th>What It Measures</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>PDOP</strong></td><td>Position (3D)</td></tr>
+                    <tr><td><strong>HDOP</strong></td><td>Horizontal position</td></tr>
+                    <tr><td><strong>VDOP</strong></td><td>Vertical position</td></tr>
+                    <tr><td><strong>TDOP</strong></td><td>Time</td></tr>
+                    <tr><td><strong>GDOP</strong></td><td>Geometric (overall)</td></tr>
+                </tbody>
+            </table>
+
+            <h3>DOP Quality Scale</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>DOP Value</th>
+                        <th>Quality</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>1-2</td><td>Excellent</td></tr>
+                    <tr><td>2-5</td><td>Good</td></tr>
+                    <tr><td>5-10</td><td>Moderate</td></tr>
+                    <tr><td>10-20</td><td>Fair</td></tr>
+                    <tr><td>&gt;20</td><td>Poor</td></tr>
+                </tbody>
+            </table>
+
+            <div class="info-box tip">
+                <p><strong>Good geometry:</strong> Satellites spread across the sky = Low DOP = Better accuracy</p>
+                <p><strong>Poor geometry:</strong> Satellites clustered together = High DOP = Worse accuracy</p>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/dop_geometry.png" alt="DOP Geometry Comparison" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                <p class="figure-attribution">Satellite geometry affects position accuracy: (a) large angle = better precision, (b) small angle = greater uncertainty.<br>Source: <a href="https://gistbok-ltb.ucgis.org/page/34/concept/10599" target="_blank">Hodgson, 2025 - GIS&T BoK</a></p>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <h2>GPS Accuracy Levels</h2>
+
+            <h3>Recreational Grade (Standard)</h3>
+            <ul>
+                <li><strong>Accuracy:</strong> About <strong>15 meters</strong> using just the main satellites</li>
+                <li>Equipment: Smartphones, handheld GPS units, our Arduino builds</li>
+                <li>Cost: Free to use</li>
+            </ul>
+
+            <h3>WAAS (Wide Area Augmentation System)</h3>
+            <ul>
+                <li><strong>Accuracy:</strong> Less than <strong>3 meters</strong></li>
+                <li>How it works: Ground stations and extra satellites provide corrections</li>
+                <li>Coverage: North America (vital for aviation)</li>
+                <li>Equipment: WAAS-enabled GPS receivers</li>
+            </ul>
+
+            <h3>Mapping Grade</h3>
+            <ul>
+                <li><strong>Accuracy:</strong> Less than <strong>1 meter</strong></li>
+                <li>How it works: Records raw signal for <strong>post-processing</strong> later</li>
+                <li>Method: Compare with data from a base station</li>
+                <li>Equipment: Professional mapping GPS units</li>
+            </ul>
+
+            <h3>Survey Grade</h3>
+            <ul>
+                <li><strong>Accuracy:</strong> Within <strong>1 centimeter</strong>!</li>
+                <li>How it works: RTK (Real-Time Kinematic) corrections</li>
+                <li>Equipment: Expensive! ($15,000 - $30,000) plus subscriptions</li>
+                <li>Use: Construction, property boundaries, infrastructure</li>
+            </ul>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/dgps_mobile_base.png" alt="Differential GPS (DGPS) Diagram" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>Differential GPS (DGPS) uses a fixed reference station to calculate signal errors and transmit corrections to mobile receivers.</em></p>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <img src="images/waas_diagram.jpeg" alt="WAAS (Wide Area Augmentation System) Diagram" style="max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                <p style="font-size: 0.9rem; color: #666; margin-top: 0.75rem;"><em>WAAS (Wide Area Augmentation System) uses a network of ground reference stations to calculate and broadcast signal corrections via geostationary satellites.</em></p>
+            </div>
+
+            <h3>Summary Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Technique</th>
+                        <th>Accuracy</th>
+                        <th>Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Standard GPS (Recreational)</strong></td>
+                        <td>~15 m</td>
+                        <td>$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>WAAS/EGNOS</strong></td>
+                        <td>&lt;3 m</td>
+                        <td>$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mapping Grade (Post-Processing)</strong></td>
+                        <td>&lt;1 m</td>
+                        <td>$$</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Survey Grade (RTK)</strong></td>
+                        <td>1 cm</td>
+                        <td>$$$$$</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <div class="nav-buttons">
+            <a href="how-gps-works.html" class="nav-btn prev">&larr; How it Works</a>
+            <a href="hardware.html" class="nav-btn next">Hardware Assembly &rarr;</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+

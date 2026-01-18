@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Lab Worksheet | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: #1a1a2e;
+            background: #fff;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        @media print {
+            body {
+                padding: 0;
+                font-size: 11pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+            table {
+                font-size: 10pt;
+            }
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #1a1a2e;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #666;
+        }
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .student-info label {
+            font-weight: 600;
+        }
+        .student-info input {
+            border: none;
+            border-bottom: 1px solid #333;
+            background: transparent;
+            width: 100%;
+            padding: 5px 0;
+            font-family: inherit;
+        }
+        .experiment {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .experiment h2 {
+            font-size: 1.3rem;
+            color: #1a1a2e;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+        .experiment h3 {
+            font-size: 1rem;
+            margin: 15px 0 10px 0;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px 10px;
+            text-align: left;
+        }
+        th {
+            background: #e8e8e8;
+            font-weight: 600;
+        }
+        .fill-in {
+            min-height: 25px;
+        }
+        .formula-box {
+            background: #f0f4f8;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+        .question {
+            margin: 15px 0;
+        }
+        .question label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .answer-lines {
+            border-bottom: 1px solid #999;
+            min-height: 60px;
+            margin-top: 5px;
+        }
+        .answer-lines.large {
+            min-height: 100px;
+        }
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+        .checklist li {
+            padding: 5px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .checklist li::before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+        .print-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #0066cc, #004499);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .print-btn:hover {
+            transform: scale(1.02);
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <button class="print-btn no-print" onclick="window.print()">🖨️ Print This Worksheet</button>
+
+    <div class="header">
+        <h1>📡 GPS Workshop Lab Worksheet</h1>
+        <p>International Space University • MSS26 • January 2026</p>
+    </div>
+
+    <div class="student-info">
+        <div>
+            <label>Student Name:</label>
+            <input type="text" />
+        </div>
+        <div>
+            <label>Date:</label>
+            <input type="text" />
+        </div>
+        <div>
+            <label>Group Number:</label>
+            <input type="text" />
+        </div>
+        <div>
+            <label>Partner(s):</label>
+            <input type="text" />
+        </div>
+    </div>
+
+    <!-- EXPERIMENT 1 -->
+    <div class="experiment">
+        <h2>✅ Experiment 1: Device Validation</h2>
+        <p>Verify that your GPS unit is working correctly before collecting detailed data.</p>
+
+        <h3>Validation Checklist</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Check</th>
+                    <th>Expected Result</th>
+                    <th>Your Result</th>
+                    <th>Pass?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Satellites detected</td>
+                    <td>4 or more</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>Valid coordinates</td>
+                    <td>Lat/Long displayed (not "INVALID")</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>Google Maps verification</td>
+                    <td>Pin within 10-20m of location</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>HDOP value</td>
+                    <td>Less than 5</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Recorded Coordinates</h3>
+        <table>
+            <tr>
+                <td style="width: 30%;"><strong>Latitude:</strong></td>
+                <td class="fill-in"></td>
+            </tr>
+            <tr>
+                <td><strong>Longitude:</strong></td>
+                <td class="fill-in"></td>
+            </tr>
+            <tr>
+                <td><strong>Time of reading:</strong></td>
+                <td class="fill-in"></td>
+            </tr>
+        </table>
+
+        <div class="question">
+            <label>Did the Google Maps pin match your actual location? Describe any discrepancy:</label>
+            <div class="answer-lines"></div>
+        </div>
+    </div>
+
+    <!-- EXPERIMENT 2 -->
+    <div class="experiment page-break">
+        <h2>📏 Experiment 2: Distance Measurement</h2>
+        <p>Compare GPS-calculated distance to a known paced distance.</p>
+
+        <h3>Position Data</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Measurement</th>
+                    <th>Position A (Start)</th>
+                    <th>Position B (End)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Latitude</strong></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td><strong>Longitude</strong></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td><strong>Satellites</strong></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td><strong>HDOP</strong></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Distance Calculations</h3>
+        <table>
+            <tr>
+                <td style="width: 50%;"><strong>Step Count:</strong></td>
+                <td class="fill-in">_______ steps</td>
+            </tr>
+            <tr>
+                <td><strong>Paced Distance (steps × ~1m):</strong></td>
+                <td class="fill-in">_______ meters</td>
+            </tr>
+            <tr>
+                <td><strong>GPS-Calculated Distance:</strong></td>
+                <td class="fill-in">_______ meters</td>
+            </tr>
+        </table>
+
+        <p style="font-size: 0.9rem; margin-top: 10px;"><em>Use: <a href="https://sounny.github.io/latlongdist/">sounny.github.io/latlongdist</a> to calculate GPS distance</em></p>
+
+        <h3>Error Analysis</h3>
+        <table>
+            <tr>
+                <td style="width: 50%;"><strong>Difference (Error):</strong></td>
+                <td class="fill-in">_______ meters</td>
+            </tr>
+            <tr>
+                <td><strong>Percentage Error:</strong></td>
+                <td class="fill-in">_______ %</td>
+            </tr>
+        </table>
+
+        <div class="formula-box">
+            Percentage Error = |GPS Distance - Paced Distance| / Paced Distance × 100
+        </div>
+
+        <div class="question">
+            <label>Is your error within the expected range (20-30m)? What factors may have contributed to error?</label>
+            <div class="answer-lines"></div>
+        </div>
+    </div>
+
+    <!-- EXPERIMENT 3 -->
+    <div class="experiment page-break">
+        <h2>🌍 Experiment 3: Calculate Earth's Circumference</h2>
+        <p>Recreate Eratosthenes' famous experiment using GPS!</p>
+
+        <h3>Data from Experiment 2</h3>
+        <table>
+            <tr>
+                <td style="width: 50%;"><strong>Latitude A:</strong></td>
+                <td class="fill-in"></td>
+            </tr>
+            <tr>
+                <td><strong>Latitude B:</strong></td>
+                <td class="fill-in"></td>
+            </tr>
+            <tr>
+                <td><strong>Distance walked:</strong></td>
+                <td class="fill-in">_______ meters</td>
+            </tr>
+        </table>
+
+        <h3>Calculations</h3>
+        <div class="formula-box">
+            Angular Difference = |Latitude B - Latitude A| = _______ degrees
+        </div>
+
+        <div class="formula-box">
+            Circumference = (Distance / Angular Difference) × 360 = _______ km
+        </div>
+
+        <h3>Show Your Work</h3>
+        <div class="answer-lines large"></div>
+
+        <h3>Comparison to Actual Value</h3>
+        <table>
+            <tr>
+                <td style="width: 50%;"><strong>Your Calculated Circumference:</strong></td>
+                <td class="fill-in">_______ km</td>
+            </tr>
+            <tr>
+                <td><strong>Actual Earth Circumference:</strong></td>
+                <td>40,075 km</td>
+            </tr>
+            <tr>
+                <td><strong>Your Error:</strong></td>
+                <td class="fill-in">_______ km (_______ %)</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- DISCUSSION QUESTIONS -->
+    <div class="experiment page-break">
+        <h2>📝 Discussion Questions</h2>
+
+        <div class="question">
+            <label>1. How close did your circumference calculation come to the actual value? What sources of error affected your result?</label>
+            <div class="answer-lines large"></div>
+        </div>
+
+        <div class="question">
+            <label>2. How could you improve the accuracy of this experiment?</label>
+            <div class="answer-lines"></div>
+        </div>
+
+        <div class="question">
+            <label>3. Why did Eratosthenes need the sun, while you could use GPS?</label>
+            <div class="answer-lines"></div>
+        </div>
+
+        <div class="question">
+            <label>4. How many satellites did you typically see? Did this vary by location?</label>
+            <div class="answer-lines"></div>
+        </div>
+
+        <div class="question">
+            <label>5. Did the environment (buildings, trees, indoors) affect your GPS results? Explain.</label>
+            <div class="answer-lines"></div>
+        </div>
+    </div>
+
+    <!-- WAYPOINT DATA -->
+    <div class="experiment page-break">
+        <h2>📍 Additional Waypoint Data Collection</h2>
+        <p>Record GPS data from 3-5 locations around campus:</p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Location Description</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                    <th>Altitude (m)</th>
+                    <th>Sats</th>
+                    <th>HDOP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                    <td class="fill-in"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Observations</h3>
+        <div class="question">
+            <label>What patterns did you notice in satellite count and HDOP across different locations?</label>
+            <div class="answer-lines"></div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <p>GPS Workshop • International Space University • Instructor: Dr. Anwar Sounny-Slitine</p>
+        <p>Online Lab Manual: <strong><a href="https://sounny.github.io/gpsworkshop" style="color: inherit;">sounny.github.io/gpsworkshop</a></strong></p>
+    </div>
+
+    <button class="print-btn no-print" onclick="window.print()">🖨️ Print This Worksheet</button>
+</body>
+</html>
