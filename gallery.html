@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workshop Gallery | GPS Workshop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Gallery Grid Styles */
+        .gallery-header {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .gallery-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .gallery-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .story-trigger {
+            background: linear-gradient(90deg, #ff6b35, #f5576c);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .story-trigger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 0 1rem;
+            max-width: 1200px;
+            margin: 0 auto 3rem auto;
+        }
+
+        .gallery-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(255,255,255,0.8), transparent);
+            padding: 20px 15px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Full Screen Story Mode */
+        .story-viewer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            flex-direction: column;
+        }
+
+        .story-viewer.active {
+            display: flex;
+        }
+
+        .story-progress-container {
+            display: flex;
+            gap: 4px;
+            padding: 10px 10px 0 10px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            z-index: 10;
+        }
+
+        .progress-bar-slot {
+            flex: 1;
+            height: 3px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            border-radius: 2px;
+            transition: width 0.1s linear;
+        }
+        
+        .progress-bar-slot.completed .progress-bar-fill {
+            width: 100%;
+        }
+        
+        .progress-bar-slot.active .progress-bar-fill {
+            /* Width handled by JS animation */
+        }
+
+        .story-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .story-image {
+            max-width: 100%;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+
+        /* Navigation Zones */
+        .nav-zone {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 30%;
+            z-index: 5;
+        }
+        
+        .nav-zone.left { left: 0; }
+        .nav-zone.right { right: 0; width: 70%; } /* Right zone is bigger for tapping forward */
+
+        .story-caption {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            text-shadow: 0 2px 4px rgba(,0,0,0.8);
+            padding: 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+            z-index: 6;
+        }
+        
+        .story-caption h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .story-caption p {
+            font-size: 1.1rem;
+            opacity: 1;
+            max-width: 600px;
+            margin: 0 auto;
+            color: white;
+        }
+
+        .close-story {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 20;
+            opacity: 0.7;
+        }
+        
+        .close-story:hover { opacity: 1; }
+
+        .story-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            pointer-events: none; /* Let clicks pass through to zones */
+        }
+
+        .nav-arrow {
+            color: rgba(255,255,255,0.5);
+            font-size: 3rem;
+            pointer-events: auto;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .nav-arrow:hover { color: white; }
+
+        @media (min-width: 768px) {
+            .story-image {
+                border-radius: 12px;
+                max-height: 90vh;
+            }
+            .story-content {
+                padding: 20px;
+            }
+        }
+    </style>
+
+    <style>
+        .gallery-header h1, .gallery-header p {
+            color: white !important;
+        }
+        .gallery-overlay h3, .gallery-overlay p {
+            color: white !important;
+        }
+        .story-caption h3, .story-caption p {
+            color: white !important;
+        }
+        /* Ensure overlay is visible if desired, or at least readable when shown */
+        .gallery-overlay {
+            color: white !important;
+            /* text-shadow: 0 1px 3px rgba(0,0,0,0.8); */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop</span>
+            </a>
+            <button class="nav-toggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="introduction.html">Intro</a></li>
+                <li><a href="how-gps-works.html">How it Works</a></li>
+                <li><a href="field-testing.html">Field Lab</a></li>
+                <li><a href="gallery.html" class="active">Gallery</a></li>
+                <li><a href="quiz.html">Quiz</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="gallery-header">
+        <h1>Workshop Memories</h1>
+        <p>A look back at our time building and testing GPS units in Strasbourg.</p>
+        <button class="story-trigger" onclick="openStory(0)">
+            <span>▶</span> Watch Story Recap
+        </button>
+    </div>
+
+    <main class="gallery-grid">
+        <!-- Gallery Items generated by JS or hardcoded -->
+        <div class="gallery-item" onclick="openStory(0)">
+            <img src="images/memories/media__1771145216421.jpg" alt="Troubleshooting outside">
+            <div class="gallery-overlay">
+                <h3>Getting a Signal</h3>
+                <p>Troubleshooting connection with satellites outside.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" onclick="openStory(1)">
+            <img src="images/memories/media__1771145281373.jpg" alt="Happy students inside">
+            <div class="gallery-overlay">
+                <h3>Success!</h3>
+                <p>Heading back inside after a successful lab.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" onclick="openStory(2)">
+            <img src="images/memories/media__1771145309940.jpg" alt="Park Lab">
+            <div class="gallery-overlay">
+                <h3>Field Work</h3>
+                <p>Testing in the park areas around ISU campus.</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" onclick="openStory(3)">
+            <img src="images/memories/media__1771145355396.jpg" alt="Red light flashing">
+            <div class="gallery-overlay">
+                <h3>It works!</h3>
+                <p>Red flashing light = Satellite Lock!</p>
+            </div>
+        </div>
+        
+        <div class="gallery-item" onclick="openStory(4)">
+            <img src="images/memories/media__1771145396247.jpg" alt="Working unit">
+            <div class="gallery-overlay">
+                <h3>Final Product</h3>
+                <p>We have a working unit! Just need a case now.</p>
+            </div>
+        </div>
+    </main>
+    
+    <div class="nav-buttons" style="max-width: 1200px; margin: 0 auto 3rem auto; padding: 0 1rem;">
+        <a href="quiz.html" class="nav-btn prev">&larr; Quiz</a>
+        <a href="index.html" class="nav-btn next">Back to Home &rarr;</a>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <span class="logo-icon">📡</span>
+                <span>GPS Workshop | ISU MSS26</span>
+            </div>
+            <p>International Space University • Strasbourg, France • January 2026</p>
+            <p class="footer-love">Made with ❤️ by <a href="https://sounny.github.io/" target="_blank" class="instructor-link">Sounny</a></p>
+        </div>
+    </footer>
+
+    <!-- Story Viewer Overlay -->
+    <div class="story-viewer" id="storyViewer">
+        <div class="story-progress-container" id="progressContainer">
+            <!-- Progress bars injected here -->
+        </div>
+        
+        <button class="close-story" onclick="closeStory()">&times;</button>
+        
+        <div class="story-content">
+            <div class="nav-zone left" onclick="prevStory(event)"></div>
+            <div class="nav-zone right" onclick="nextStory(event)"></div>
+            
+            <img src="" alt="Story" id="storyImage" class="story-image">
+            
+            <div class="story-caption" id="storyCaption">
+                <h3 id="captionTitle">Title</h3>
+                <p id="captionText">Description</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const stories = [
+            {
+                src: "images/memories/media__1771145216421.jpg",
+                title: "Finding the Signal",
+                text: "Troubleshooting signal connection... we had to go outside to get a clear view of the sky!"
+            },
+            {
+                src: "images/memories/media__1771145281373.jpg",
+                title: "Mission Accomplished",
+                text: "Happy students returning indoors after a successful field lab."
+            },
+            {
+                src: "images/memories/media__1771145309940.jpg",
+                title: "Campus Field Work",
+                text: " collecting data points in the park areas around the ISU campus."
+            },
+            {
+                src: "images/memories/media__1771145355396.jpg",
+                title: "We Have Lock!",
+                text: "Getting that red flashing light on the board means we have a solid satellite fix."
+            },
+            {
+                src: "images/memories/media__1771145396247.jpg",
+                title: "Ready for Launch",
+                text: "We have a fully working unit! Now we just need to 3D print a case."
+            }
+        ];
+
+        let currentStoryIndex = 0;
+        let storyTimer;
+        const STORY_DURATION = 5000; // 5 seconds per slide
+        
+        const viewer = document.getElementById('storyViewer');
+        const imgElement = document.getElementById('storyImage');
+        const titleElement = document.getElementById('captionTitle');
+        const textElement = document.getElementById('captionText');
+        const progressContainer = document.getElementById('progressContainer');
+
+        function initProgressBars() {
+            progressContainer.innerHTML = '';
+            stories.forEach((_, index) => {
+                const slot = document.createElement('div');
+                slot.className = 'progress-bar-slot';
+                slot.innerHTML = '<div class="progress-bar-fill"></div>';
+                progressContainer.appendChild(slot);
+            });
+        }
+
+        function openStory(index) {
+            currentStoryIndex = index;
+            viewer.classList.add('active');
+            initProgressBars();
+            showStory(currentStoryIndex);
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeStory() {
+            viewer.classList.remove('active');
+            clearTimeout(storyTimer);
+            document.body.style.overflow = 'auto';
+        }
+
+        function showStory(index) {
+            if (index < 0) {
+                closeStory();
+                return;
+            }
+            if (index >= stories.length) {
+                closeStory();
+                return;
+            }
+
+            // Update Content
+            const story = stories[index];
+            imgElement.src = story.src;
+            titleElement.textContent = story.title;
+            textElement.textContent = story.text;
+
+            // Update Progress Bars
+            const slots = document.querySelectorAll('.progress-bar-slot');
+            slots.forEach((slot, i) => {
+                const fill = slot.querySelector('.progress-bar-fill');
+                // Reset transition for instant updates
+                fill.style.transition = 'none';
+                
+                if (i < index) {
+                    fill.style.width = '100%';
+                    slot.classList.add('completed');
+                } else if (i > index) {
+                    fill.style.width = '0%';
+                    slot.classList.remove('completed');
+                } else {
+                    // Current slide
+                    fill.style.width = '0%';
+                    slot.classList.remove('completed');
+                    
+                    // Trigger reflow
+                    void fill.offsetWidth;
+                    
+                    // Start animation
+                    fill.style.transition = `width ${STORY_DURATION}ms linear`;
+                    fill.style.width = '100%';
+                }
+            });
+
+            // Set Timer for next slide
+            clearTimeout(storyTimer);
+            storyTimer = setTimeout(() => {
+                nextStory();
+            }, STORY_DURATION);
+        }
+
+        function nextStory(e) {
+            if (e) e.stopPropagation();
+            if (currentStoryIndex < stories.length - 1) {
+                currentStoryIndex++;
+                showStory(currentStoryIndex);
+            } else {
+                closeStory();
+            }
+        }
+
+        function prevStory(e) {
+            if (e) e.stopPropagation();
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                showStory(currentStoryIndex);
+            } else {
+                // If at start, maybe retain or close? Let's just stay at 0 or close.
+                // Usually stories close if you tap left on first one?
+                // For now, loop or stay. Let's stay.
+                showStory(0); 
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!viewer.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') closeStory();
+            if (e.key === 'ArrowRight') nextStory();
+            if (e.key === 'ArrowLeft') prevStory();
+        });
+    </script>
+</body>
+</html>

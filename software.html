@@ -31,6 +31,8 @@
                 <li><a href="eratosthenes.html">Eratosthenes</a></li>
                 <li><a href="field-testing.html">Field Lab</a></li>
                 <li><a href="quiz.html">Quiz</a></li>
+            
+                <li><a href="gallery.html">Memories</a></li>
             </ul>
         </div>
     </nav>
@@ -234,6 +236,15 @@
             <h2>Step 3: The GPS Code</h2>
             <p><strong>💻 For Desktop IDE (Serial Monitor Test):</strong> Copy and paste this code to test your GPS and see output in the Serial Monitor:</p>
 
+            <div class="info-box note">
+                <p><strong>👨‍💻 Code Challenge:</strong> This is "boilerplate" starter code. You might need to troubleshoot it to get it working perfectly with your specific module!</p>
+                <p><strong>Up for a challenge?</strong> Try modifying the code to:</p>
+                <ul>
+                    <li>Print the <strong>Altitude (Z value)</strong> alongside Lat/Long.</li>
+                    <li>Print the <strong>Raw NMEA sentences</strong> to see exactly what the satellite is saying.</li>
+                </ul>
+            </div>
+
                         <pre class="code-block"><code class="language-cpp">/*
  * GPS Workshop - ISU MSS26
  * Building and Testing GPS Units
@@ -284,6 +295,10 @@ void loop() {
   }
 }
 
+// =========================================================
+// 🛠️ DIAGNOSTIC TOOL: Console Output
+// The code below reports status to the user. Use this for troubleshooting!
+// =========================================================
 void displayInfo() {
   Serial.println(F("----------------------------------------"));
 
@@ -327,6 +342,10 @@ void displayInfo() {
   Serial.println(F("----------------------------------------"));
   Serial.println();
 }</code></pre>
+
+            <div class="info-box tip">
+                <p><strong>🛠️ Troubleshooting Tool:</strong> Pay special attention to the <code>displayInfo()</code> function regarding the Console Output. This is your "dashboard" for troubleshooting. If the GPS isn't working, this code is what tells you <em>why</em>!</p>
+            </div>
 
             <h3>☁️ For Arduino Cloud (IoT Dashboard):</h3>
             <p>If you're using Arduino Cloud, first create a "Thing" with these variables:</p>
